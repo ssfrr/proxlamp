@@ -49,15 +49,12 @@ inline void set_alarm1(uint32_t cycles) {
 
 /* timer1 overflow interrupt handler */
 ISR(TIMER1_OVF_vect) {
-	static int state = 0;
-	if(state) {
+	if(TRIAC_PORT & TRIAC_PIN) {
 		TRIAC_PORT &= ~TRIAC_PIN;
-		state = 0;
 		set_alarm1(ac_halfcycle - pulse_width);
 	}
 	else {
 		TRIAC_PORT |= TRIAC_PIN;
-		state = 1;
 		set_alarm1(pulse_width);
 	}
 }
