@@ -3,6 +3,9 @@
 #include <util/delay.h>
 #include "dimmer.h"
 
+state_t state = IDLE;
+char sensor = 0;
+
 int main(void) {
 	int brightness_period = 2000;
 	int elapsed_ms = 0;

@@ -44,7 +44,8 @@
 #define ZEROCROSS_INT_FLAG (1 << INTF0)
 #define ZEROCROSS_INT_EN (1 << INT0) 
 
-/* Registers for sensor timing */
+/* Registers for Sensor pulse timer */
+
 
 /* Board-Specific Constants */
 #define TRIAC_TCNT_MAX UINT16_MAX
