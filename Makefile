@@ -1,5 +1,5 @@
 TARGET=proxlamp
-SOURCES=proxlamp.c bsp.c
+SOURCES=$(wildcard *.c)
 OBJECTS=$(SOURCES:.c=.o)
 
 MMCU=atmega88

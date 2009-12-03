@@ -1,7 +1,10 @@
 #include "proxlamp_r01_bsp.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
 void bsp_setup() {
 	clock_setup();
 	pin_io_setup();
+	sei();
 }
 
 void clock_setup(void) {

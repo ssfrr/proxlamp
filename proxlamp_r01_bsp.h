@@ -1,5 +1,3 @@
-#include <avr/io.h>
-
 #ifndef PROXLAMP_BSP_H
 #define PROXLAMP_BSP_H
 
