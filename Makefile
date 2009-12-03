@@ -1,4 +1,6 @@
 TARGET=proxlamp
+SOURCES=proxlamp.c bsp.c
+OBJECTS=$(SOURCES:.c=.o)
 
 MMCU=atmega88
 PROGRAMMER=dragon_isp
@@ -13,8 +15,8 @@ $(TARGET).hex:
 %.hex : %.obj
 	$(OBJ2HEX) -R .eeprom -O ihex $< $@
 
-%.obj : %.o
-	$(CC) $(CFLAGS) $< -o $@
+%.obj : $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $@
 
 burn: $(TARGET).hex
 	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU) $(AVROPTS) -Uflash:w:$(TARGET).hex
