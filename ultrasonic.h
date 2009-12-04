@@ -34,15 +34,25 @@
 /* 
  * impulse near receiver (hand clap) causes the receiver
  * to resonate at 41kHz, maximum amplitude around 150mV P-P.
+ *
+ * noise floor seems to be around 60mV P-P, with a 6mV DC offset
  */
 
 /* transmit at 41 kHz */
 #define FTRANS 41000
-/* calculate the counter value */
-#define SENSOR_PULSE ((FOSC / FTRANS / 2) >> SENSOR_TIME_DIV)
-/* how many pulses to send each time */
-#define NUM_PULSES 20
-#define TWICE_NUM_PULSES (NUM_PULSES << 1)
+
+/* let the transducer ringdown for this many microseconds */
+#define RINGDOWN_US 1500
+
+/* stop listening to echos after this many microseconds */
+#define TIMEOUT_US 30000
+
+/* 
+ * echo_tics will contain the echo time of the most recent 
+ * measurement in clock tics, or zero if a measurement is
+ * in progress or timed-out
+ */
+extern volatile unsigned int echo_tics;
 
 void select_sensor(unsigned char sensor);
 void send_pulses(unsigned int pulses);

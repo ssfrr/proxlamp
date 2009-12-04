@@ -35,7 +35,7 @@
 #include "sched.h"
 
 state_t state = IDLE;
-char sensor = 0;
+extern volatile unsigned int echo_tics;
 
 int main(void) {
 	int brightness_period = 2000;

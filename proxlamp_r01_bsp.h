@@ -61,29 +61,36 @@ typedef struct {
 */
 
 #define F_CPU 8000000UL
+#define NUM_SENSORS 8
 
 /* Pin and Port Definitions */
 #define TRIAC_PORT PORTD
 #define TRIAC_DD DDRD
 #define TRIAC_PIN (1 << PD0)
+/* triac is active high */
+#define SET_TRIAC() TRIAC_PORT |= TRIAC_PIN
+#define CLR_TRIAC() TRIAC_PORT &= ~TRIAC_PIN
 
 #define SENSOR_SEL_PORT PORTC
 #define SENSOR_SEL_DD DDRC
-#define SENSOR_SELMASK 0x07
-#define SENSOR_SELSHIFT 0
+#define SENSOR_SEL_MASK 0x07
+#define SENSOR_SEL_SHIFT 0
 #define SENSOR_SELECT(n) \
 	do { \
-	SENSOR_PORT = (SENSOR_PORT & ~SENSOR_SELMASK) | \
-					((n << SENSOR_SELSHIFT) & SENSOR_SELMASK); \
-	} while(false)
+	SENSOR_SEL_PORT = (SENSOR_SEL_PORT & ~SENSOR_SEL_MASK) | \
+					((n << SENSOR_SEL_SHIFT) & SENSOR_SEL_MASK); \
+	} while(0)
 
 #define SENSOR_DIR_PORT PORTC
 #define SENSOR_DIR_DD DDRC
 #define SENSOR_DIR_PIN (1 << PC3)
+#define SET_SENSOR_RECEIVE() SENSOR_DIR_PORT |= SENSOR_DIR_PIN
+#define SET_SENSOR_SEND() SENSOR_DIR_PORT &= ~SENSOR_DIR_PIN
 
 #define SENSOR_PULSE_PORT PORTD
 #define SENSOR_PULSE_DD DDRD
 #define SENSOR_PULSE_PIN (1 << PD6)
+#define TOGGLE_PULSE_PIN() SENSOR_PULSE_PORT ^= SENSOR_PULSE_PIN
 
 #define RECEIVE_PORT PORTD
 #define RECEIVE_DD DDRD
@@ -123,30 +130,40 @@ typedef struct {
 /* Registers for Ultrasonic Receive External Interrupt */
 #define RECEIVE_EIMSK EIMSK
 #define RECEIVE_EIFR EIFR
+#define RECEIVE_EICRA EICRA
 
 /* Masks for Ultrasonic Receive External Interrupt */
 #define RECEIVE_INT_FLAG (1 << INTF1)
 #define RECEIVE_INT_EN (1 << INT1) 
 
+#define RECEIVE_INT_ENABLE() RECEIVE_EIMSK |= RECEIVE_INT_EN
+#define RECEIVE_INT_DISABLE() RECEIVE_EIMSK &= ~RECEIVE_INT_EN
+
 /* Registers for Zerocross External Interrupt */
 #define ZEROCROSS_EIMSK EIMSK
 #define ZEROCROSS_EIFR EIFR
+#define ZEROCROSS_EICRA EICRA
 
 /* Masks for Zerocross External Interrupt */
 #define ZEROCROSS_INT_FLAG (1 << INTF0)
 #define ZEROCROSS_INT_EN (1 << INT0) 
 
+#define ZEROCROSS_INT_ENABLE() ZEROCROSS_EIMSK |= ZEROCROSS_INT_EN
+#define ZEROCROSS_INT_DISABLE() ZEROCROSS_EIMSK &= ~ZEROCROSS_INT_EN
+
 /* Registers for Sensor pulse timer */
 #define SENSOR_TIMSK TIMSK0
 #define SENSOR_TIFR TIFR0
 #define SENSOR_TCNT TCNT0
-#define SENSOR_COMP OCR0Ah
+#define SENSOR_COMP OCR0A
 #define SENSOR_CONF_A TCCR0A
 #define SENSOR_CONF_B TCCR0B
 
 /* Masks for Sensor Pulse Timer */
 #define SENSOR_INT_FLAG (1 << OCF0A)
 #define SENSOR_INT_EN (1 << OCIE0A)
+
+#define SENSOR_TIMER_INT_ENABLE() SENSOR_TIMSK |= SENSOR_INT_EN
 
 
 /* Board-Specific Constants */

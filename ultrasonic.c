@@ -33,46 +33,90 @@
 #include "ultrasonic.h"
 #include "sched.h"
 
-volatile unsigned int periods;
+static volatile unsigned int periods;
+volatile unsigned int echo_tics = 0;
 
-int get_waiting_tics() {
-	return (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) << SENSOR_TIME_DIV;
-}
+/* calculate the counter value for the transmit frequency */
+#define SENSOR_PULSE ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
 
+#define RINGDOWN_PERIODS (RINGDOWN_US * (F_CPU / 1000000) \
+		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
+#define TIMEOUT_PERIODS (TIMEOUT_US* (F_CPU / 1000000) \
+		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
+
+
+/* set up the hardware for the proper sensor */
 void select_sensor(unsigned char sensor) {
-	SENSORbits.SELECT = sensor;
+	SENSOR_SELECT(sensor);
 }
 
-void send_pulse(unsigned int pulses) {
+/* send a number of ultrasonic pulses at FTRANS Hz */
+void send_pulses(unsigned int pulses) {
 	state = PULSING;
-	/* set pin as output */
-	SENSOR_DD = (1 << sensor);
-	/* set the compare value to the pulse length */
+	echo_tics = 0;
+	/* set the timer compare value to the pulse length */
 	SENSOR_COMP = SENSOR_PULSE;
 	/* we're actually counting half-cycles */
 	periods = pulses << 1;
+	SET_SENSOR_SEND();
 	SENSOR_TCNT = 0;
 	/* clear any existing sensor timer flags */
 	SENSOR_TIFR |= SENSOR_INT_FLAG;
 	/* enable sensor timer interrupt */
-	SENSOR_TIMSK |= SENSOR_INT_EN;
+	SENSOR_TIMER_INT_ENABLE();
 }
 
+/* 
+ * this interrupt is triggered every time the sensor counter hits
+ * SENSOR_COMP. The counter is automatically set to 0.
+ */
 ISR(INT_SENSOR_TIMER) {
-	if(state == PULSING) {
+	switch(state) {
+
+		case PULSING:
 		if(periods--) {
 			/* while we still have pulses to send */
-			/* toggle the current sensor pin */
-			SENSOR_PORT ^= (1 << sensor);
+			TOGGLE_PULSE_PIN();
 		}
 		else {
-			/* now we wait for the echo */
-			state = WAITING;
+			/* now we wait for the resonance to die down*/
+			state = IGNORING;
+			SET_SENSOR_RECEIVE();
 			/* we're going to count how many overflows occur */
 			SENSOR_COMP = SENSOR_TCNT_MAX;
 		}
+		break;
+
+		case IGNORING:
+		if(periods > RINGDOWN_PERIODS) {
+			/* ringing should be gone by now */
+			state = WAITING;
+			RECEIVE_INT_ENABLE();
+			periods++;
+		}
+		else
+			periods++;
+		break;
+
+		case WAITING:
+		if(periods > TIMEOUT_PERIODS) {
+			/* we've waited too long, they're not coming */
+			RECEIVE_INT_DISABLE();
+			state = IDLE;
+		}
+		else
+			periods++;
+		break;
+
+		default:
+		break;
 	}
-	else if(state == WAITING) {
-		periods++;
-	}
+}
+
+
+/* this interrupt is called when transducer output changes state */
+ISR(INT_RECEIVE) {
+	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) << SENSOR_TIME_DIV;
+	RECEIVE_INT_DISABLE();
+	state = IDLE;
 }

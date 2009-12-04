@@ -60,7 +60,7 @@ void sensor_timer_setup() {
 	SENSOR_CONF_B = (1 << CS00);
 	SENSOR_COMP = SENSOR_TCNT_MAX;
 	/* disable timer interrupts for this counter */
-	SENSOR_TIMSK &= ~SENSOR_INT_EN
+	SENSOR_TIMSK &= ~SENSOR_INT_EN;
 }
 
 void pin_io_setup(void) {
@@ -74,19 +74,41 @@ void pin_io_setup(void) {
 	/* start in low state */
 	TEST_PORT &= ~TEST_PIN; 
 
+	/* set the pulse pin to outpue */
+	SENSOR_PULSE_DD |= SENSOR_PULSE_PIN;
+	/* start the pulse pin at 0 */
+	SENSOR_PULSE_PORT |= SENSOR_PULSE_PIN;
+
+	/* set the sensor direction select pin to output */
+	SENSOR_DIR_DD |= SENSOR_DIR_PIN;
+	/* set the sensor directino select pin to send */
+	SET_SENSOR_SEND();
+
 	/* set the zero cross detector pin to input */
 	ZEROCROSS_DD &= ~ZEROCROSS_PIN; 
 	/* disable pullup resistor on zero-cross detector */
 	ZEROCROSS_PORT &= ~ZEROCROSS_PIN;
 
-	/* set the sensor port to all input */
-	SENSOR_DD = 0x00;
-	/* enable pull-up resistors on sensor input */
-	SENSOR_PORT = 0xFF;
+	/* set the receiver pin to input */
+	RECEIVE_DD &= ~RECEIVE_PIN; 
+	/* disable pullup resistor on receiver pin */
+	RECEIVE_PORT &= ~RECEIVE_PIN;
 
-	/* set up INT0 interrupt pin to trigger on both edges */
-	EICRA = 0x01;
+	/* set the sensor selector pins to output */
+	SENSOR_SEL_DD |= SENSOR_SEL_MASK;
+	/* start sensor select pins 000 */
+	SENSOR_SEL_PORT &= ~SENSOR_SEL_MASK;
+	
+	/* set Zerocross interrupt to trigger on both edges */
+	ZEROCROSS_EICRA |= (1 << ISC00);
+
 	/* enable interrupt from INT0 */
-	EIMSK = 0x01;
+	ZEROCROSS_INT_ENABLE();
+
+	/* set receive interrupt to trigger on both edget */
+	RECEIVE_EICRA |= (1 << ISC10);
+
+	/* disable receive interrupt until we're ready to listen */
+	RECEIVE_INT_DISABLE();
 }
 
