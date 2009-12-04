@@ -2,6 +2,8 @@
 #include "bsp.h"
 #include <util/delay.h>
 #include "dimmer.h"
+#include "ultrasonic.h"
+#include "sched.h"
 
 state_t state = IDLE;
 char sensor = 0;

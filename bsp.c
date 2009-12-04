@@ -3,7 +3,10 @@
 #include <avr/io.h>
 void bsp_setup() {
 	clock_setup();
+	triac_timer_setup();
+	sensor_timer_setup();
 	pin_io_setup();
+	/* enable interupts */
 	sei();
 }
 
@@ -11,12 +14,23 @@ void clock_setup(void) {
 	/* set the main clock prescaler to 1 */
 	CLKPR = 1 << CLKPCE;
 	CLKPR = 0;
+}
 
-	/* TODO: use register bit names for portability */
+void triac_timer_setup() {
+	/* run counter in normal mode */
+	TRIAC_CONF_A = 0x00;
 	/* set up 16-bit counter with prescalar of 8 */
-	TCCR1A = 0x00;
-	TCCR1B = 0x02;
+	TRIAC_CONF_B = (1 << CS11);
+}
 
+void sensor_timer_setup() {
+	/* run counter in clear-on-compare mode */
+	SENSOR_CONF_A = (1 << WGM01);
+	/* set up 8-bit counter with no prescalar */
+	SENSOR_CONF_B = (1 << CS00);
+	SENSOR_COMP = SENSOR_TCNT_MAX;
+	/* disable timer interrupts for this counter */
+	SENSOR_TIMSK &= ~SENSOR_INT_EN
 }
 
 void pin_io_setup(void) {
