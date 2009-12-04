@@ -1,7 +1,9 @@
 /************************************
  *
- * Proxlamp Board Support Package
- * Hardware Revision 01
+ * proxlamp_r01_bsp.h
+ *
+ * This file defines all the pins, ports, and registers for Revision 01 of the
+ * Proxlamp Hardware
  *
  * Copyright 2009 Spencer Russell
  * Released under the GPLv3
