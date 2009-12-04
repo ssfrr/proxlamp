@@ -49,15 +49,46 @@
 #ifndef PROXLAMP_BSP_H
 #define PROXLAMP_BSP_H
 
+/* maybe we'll get fancy later:
+typedef struct {
+	unsigned select:	3;
+	unsigned receive:	1;
+	unsigned reserved:	4;
+} SENSORbits;
+
+#define SENSOR_SELECT (volatile SENSORbits *)(&PORTC)->select
+#define SENSOR_RECEIVE (volatile SENSORbits *)(&PORTC)->receive
+*/
+
 #define F_CPU 8000000UL
+
 /* Pin and Port Definitions */
 #define TRIAC_PORT PORTD
 #define TRIAC_DD DDRD
 #define TRIAC_PIN (1 << PD0)
 
-#define SENSOR_PORT PORTB
-#define SENSOR_DD DDRB
-#define SENSOR_PINS PINB
+#define SENSOR_SEL_PORT PORTC
+#define SENSOR_SEL_DD DDRC
+#define SENSOR_SELMASK 0x07
+#define SENSOR_SELSHIFT 0
+#define SENSOR_SELECT(n) \
+	do { \
+	SENSOR_PORT = (SENSOR_PORT & ~SENSOR_SELMASK) | \
+					((n << SENSOR_SELSHIFT) & SENSOR_SELMASK); \
+	} while(false)
+
+#define SENSOR_DIR_PORT PORTC
+#define SENSOR_DIR_DD DDRC
+#define SENSOR_DIR_PIN (1 << PC3)
+
+#define SENSOR_PULSE_PORT PORTD
+#define SENSOR_PULSE_DD DDRD
+#define SENSOR_PULSE_PIN (1 << PD6)
+
+#define RECEIVE_PORT PORTD
+#define RECEIVE_DD DDRD
+#define RECEIVE_PINS PIND
+#define RECEIVE_PIN (1 << PD3)
 
 #define ZEROCROSS_PORT PORTD
 #define ZEROCROSS_DD DDRD
@@ -70,6 +101,7 @@
 
 /* Interrupt Handlers */
 
+#define INT_RECEIVE INT1_vect
 #define INT_ZEROCROSS INT0_vect
 #define INT_TRIAC_TIMER TIMER1_OVF_vect
 #define INT_SENSOR_TIMER TIMER0_COMPA_vect
@@ -87,6 +119,14 @@
 /* Masks for Triac Timer Interrupts */
 #define TRIAC_INT_FLAG (1 << TOV1)
 #define TRIAC_INT_EN (1 << TOIE1)
+
+/* Registers for Ultrasonic Receive External Interrupt */
+#define RECEIVE_EIMSK EIMSK
+#define RECEIVE_EIFR EIFR
+
+/* Masks for Ultrasonic Receive External Interrupt */
+#define RECEIVE_INT_FLAG (1 << INTF1)
+#define RECEIVE_INT_EN (1 << INT1) 
 
 /* Registers for Zerocross External Interrupt */
 #define ZEROCROSS_EIMSK EIMSK
