@@ -31,6 +31,7 @@
 typedef enum {
 	IDLE,
 	PULSING,
+	CANCELLING,
 	IGNORING,
 	WAITING,
 	RECEIVING

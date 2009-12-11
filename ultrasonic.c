@@ -36,11 +36,15 @@
 static volatile unsigned int periods;
 volatile unsigned int echo_tics = 0;
 
+/* this is how many opposite-phase pulses we'll send after the main pulses */
+#define CANCEL_PULSES 2
+
 /* calculate the counter value for the transmit frequency */
 #define SENSOR_PULSE ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
 
 #define RINGDOWN_PERIODS (RINGDOWN_US * (F_CPU / 1000000) \
 		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
+
 #define TIMEOUT_PERIODS (TIMEOUT_US* (F_CPU / 1000000) \
 		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
 
@@ -57,7 +61,7 @@ void send_pulses(unsigned int pulses) {
 	/* set the timer compare value to the pulse length */
 	SENSOR_COMP = SENSOR_PULSE;
 	/* we're actually counting half-cycles */
-	periods = pulses << 1;
+	periods = (pulses << 1) + 1;
 	SET_SENSOR_SEND();
 	SENSOR_TCNT = 0;
 	/* clear any existing sensor timer flags */
@@ -74,12 +78,23 @@ ISR(INT_SENSOR_TIMER) {
 	switch(state) {
 
 		case PULSING:
-		if(periods--) {
+		if(--periods) {
 			/* while we still have pulses to send */
 			TOGGLE_PULSE_PIN();
 		}
+		else{
+			/* send some pulses of opposite phase to cancel some of the ringdown */
+			periods = (CANCEL_PULSES << 1) + 1;
+			state = CANCELLING;
+		}
+		break;
+		
+		case CANCELLING:
+		if(--periods) {
+			TOGGLE_PULSE_PIN();
+		}
 		else {
-			/* now we wait for the resonance to die down*/
+			/* now we wait a little longer for the resonance to die down*/
 			state = IGNORING;
 			/* we're going to count how many overflows occur */
 			SENSOR_COMP = SENSOR_TCNT_MAX;
@@ -87,10 +102,10 @@ ISR(INT_SENSOR_TIMER) {
 		break;
 
 		case IGNORING:
-		if(periods > RINGDOWN_PERIODS) {
+		if(periods >= RINGDOWN_PERIODS) {
 			/* ringing should be gone by now */
 			state = WAITING;
-			RECEIVE_INT_ENABLE();
+//			RECEIVE_INT_ENABLE();
 			SET_SENSOR_RECEIVE();
 			periods++;
 		}
@@ -102,6 +117,8 @@ ISR(INT_SENSOR_TIMER) {
 		if(periods > TIMEOUT_PERIODS) {
 			/* we've waited too long, they're not coming */
 			RECEIVE_INT_DISABLE();
+			SENSOR_TIMER_INT_DISABLE();
+			SET_SENSOR_SEND();
 			state = IDLE;
 		}
 		else
@@ -120,5 +137,6 @@ ISR(INT_RECEIVE) {
 	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) << SENSOR_TIME_DIV;
 	RECEIVE_INT_DISABLE();
 	SENSOR_TIMER_INT_DISABLE();
+	SET_SENSOR_SEND();
 	state = IDLE;
 }

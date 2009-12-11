@@ -42,10 +42,10 @@
 #define FTRANS 41000
 
 /* let the transducer ringdown for this many microseconds */
-#define RINGDOWN_US 1500
+#define RINGDOWN_US 2500
 
 /* stop listening to echos after this many microseconds */
-#define TIMEOUT_US 30000
+#define TIMEOUT_US 40000
 
 /* 
  * echo_tics will contain the echo time of the most recent 
