@@ -61,7 +61,7 @@ void send_pulses(unsigned int pulses) {
 	SET_SENSOR_SEND();
 	SENSOR_TCNT = 0;
 	/* clear any existing sensor timer flags */
-	SENSOR_TIFR |= SENSOR_INT_FLAG;
+	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
 	SENSOR_TIMER_INT_ENABLE();
 }
@@ -81,7 +81,6 @@ ISR(INT_SENSOR_TIMER) {
 		else {
 			/* now we wait for the resonance to die down*/
 			state = IGNORING;
-			SET_SENSOR_RECEIVE();
 			/* we're going to count how many overflows occur */
 			SENSOR_COMP = SENSOR_TCNT_MAX;
 		}
@@ -92,6 +91,7 @@ ISR(INT_SENSOR_TIMER) {
 			/* ringing should be gone by now */
 			state = WAITING;
 			RECEIVE_INT_ENABLE();
+			SET_SENSOR_RECEIVE();
 			periods++;
 		}
 		else
@@ -116,7 +116,9 @@ ISR(INT_SENSOR_TIMER) {
 
 /* this interrupt is called when transducer output changes state */
 ISR(INT_RECEIVE) {
+	/* TODO: add some timing inteligence to filter out random spikes */
 	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) << SENSOR_TIME_DIV;
 	RECEIVE_INT_DISABLE();
+	SENSOR_TIMER_INT_DISABLE();
 	state = IDLE;
 }

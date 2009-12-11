@@ -38,13 +38,18 @@ state_t state = IDLE;
 extern volatile unsigned int echo_tics;
 
 int main(void) {
+	/* PULSING CODE
 	int brightness_period = 2000;
 	int elapsed_ms = 0;
+	*/
 
 	/* set up board-specific stuff */
 	bsp_setup();
 	
+	select_sensor(0);
+
 	while(1) {
+		/* PULSING CODE
 		if(elapsed_ms < brightness_period) {
 			set_brightness((float)elapsed_ms / brightness_period);
 		}
@@ -57,6 +62,10 @@ int main(void) {
 		elapsed_ms++;
 
 		_delay_ms(1);
+		*/
+
+		send_pulses(10);
+		_delay_ms(50);
 	}
 	return 0;
 }
