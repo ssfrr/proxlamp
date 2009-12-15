@@ -31,16 +31,25 @@
 #include "bsp.h"
 #include <avr/interrupt.h>
 #include "ultrasonic.h"
-#include "sched.h"
 
+typedef enum {
+	IDLE,
+	PULSING,
+	IGNORING,
+	WAITING,
+	RECEIVING
+} state_t;
+
+state_t state = IDLE;
 static volatile unsigned int periods;
 volatile unsigned int echo_tics = 0;
 
-/* this is how many opposite-phase pulses we'll send after the main pulses */
-#define CANCEL_PULSES 2
-
 /* calculate the counter value for the transmit frequency */
-#define SENSOR_PULSE ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
+#define PULSE_TICS ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
+
+/* calculate the maximum and minmum thresholds to recieve pulses */
+#define PULSE_TICS_MAX (PULSE_TICS * 3) >> 1
+#define PULSE_TICS_MIN PULSE_TICS >> 1
 
 #define RINGDOWN_PERIODS (RINGDOWN_US * (F_CPU / 1000000) \
 		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
@@ -48,18 +57,33 @@ volatile unsigned int echo_tics = 0;
 #define TIMEOUT_PERIODS (TIMEOUT_US* (F_CPU / 1000000) \
 		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
 
+#define TIMEOUT_TICS TIMEOUT_US * F_CPU / 1000000
+
+
+/* return the last valid distance as 16-bit unsigned int 
+ * 65536 represents the furthest distance, set by TIMEOUT_US */
+inline unsigned int get_distance() {
+	return (unsigned int)(((unsigned long)echo_tics * UINT16_MAX) / TIMEOUT_TICS);
+}
 
 /* set up the hardware for the proper sensor */
-void select_sensor(unsigned char sensor) {
+inline void select_sensor(unsigned char sensor) {
 	SENSOR_SELECT(sensor);
+}
+
+/* return whether or not the sensor is ready to start another reading */
+inline unsigned char sensor_busy() {
+	return (state != IDLE);
 }
 
 /* send a number of ultrasonic pulses at FTRANS Hz */
 void send_pulses(unsigned int pulses) {
+	if(sensor_busy())
+		return;
+	SET_TEST_PIN();
 	state = PULSING;
-	echo_tics = 0;
 	/* set the timer compare value to the pulse length */
-	SENSOR_COMP = SENSOR_PULSE;
+	SENSOR_COMP = PULSE_TICS;
 	/* we're actually counting half-cycles */
 	periods = (pulses << 1) + 1;
 	SET_SENSOR_SEND();
@@ -82,17 +106,6 @@ ISR(INT_SENSOR_TIMER) {
 			/* while we still have pulses to send */
 			TOGGLE_PULSE_PIN();
 		}
-		else{
-			/* send some pulses of opposite phase to cancel some of the ringdown */
-			periods = (CANCEL_PULSES << 1) + 1;
-			state = CANCELLING;
-		}
-		break;
-		
-		case CANCELLING:
-		if(--periods) {
-			TOGGLE_PULSE_PIN();
-		}
 		else {
 			/* now we wait a little longer for the resonance to die down*/
 			state = IGNORING;
@@ -105,8 +118,7 @@ ISR(INT_SENSOR_TIMER) {
 		if(periods >= RINGDOWN_PERIODS) {
 			/* ringing should be gone by now */
 			state = WAITING;
-//			RECEIVE_INT_ENABLE();
-			SET_SENSOR_RECEIVE();
+			RECEIVE_INT_ENABLE();
 			periods++;
 		}
 		else
@@ -114,11 +126,11 @@ ISR(INT_SENSOR_TIMER) {
 		break;
 
 		case WAITING:
+		case RECEIVING:
 		if(periods > TIMEOUT_PERIODS) {
 			/* we've waited too long, they're not coming */
 			RECEIVE_INT_DISABLE();
 			SENSOR_TIMER_INT_DISABLE();
-			SET_SENSOR_SEND();
 			state = IDLE;
 		}
 		else
@@ -130,13 +142,51 @@ ISR(INT_SENSOR_TIMER) {
 	}
 }
 
+/* if we hit this interrupt, then we didn't get another pulse in time */
+ISR(INT_PULSE_COUNTER) {
+	state = WAITING;
+	PULSE_COUNTER_INT_DISABLE();
+}
+
 
 /* this interrupt is called when transducer output changes state */
 ISR(INT_RECEIVE) {
-	/* TODO: add some timing inteligence to filter out random spikes */
-	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) << SENSOR_TIME_DIV;
-	RECEIVE_INT_DISABLE();
-	SENSOR_TIMER_INT_DISABLE();
-	SET_SENSOR_SEND();
-	state = IDLE;
+	static unsigned char received_edges;
+
+	unsigned char pulse_tics = PULSE_COUNTER_TCNT;
+	PULSE_COUNTER_TCNT = 0;
+
+	switch(state) {
+		case WAITING:
+			/* first pulse of a group */
+			PULSE_COUNTER_COMP = PULSE_TICS_MAX;
+			received_edges = 1;
+			state = RECEIVING;
+			PULSE_COUNTER_INT_ENABLE();
+			break;
+
+		case RECEIVING:
+			/* we've recently received another pulse, check how long ago */
+			if(pulse_tics < PULSE_TICS_MIN) {
+				/* pulse was too short, reset and wait for another */
+				state = WAITING;
+				PULSE_COUNTER_INT_DISABLE();
+			}
+			else {
+				/* pulse was the right length */
+				received_edges++;
+			}
+			if(received_edges >= 3) {
+				/* we've received 3 proper-length pulses in a row, it's an echo */
+				echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
+					<< SENSOR_TIME_DIV;
+				RECEIVE_INT_DISABLE();
+				SENSOR_TIMER_INT_DISABLE();
+				state = IDLE;
+				CLR_TEST_PIN();
+			}
+			break;
+		default:
+			break;
+	}
 }

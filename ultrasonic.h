@@ -38,23 +38,19 @@
  * noise floor seems to be around 60mV P-P, with a 6mV DC offset
  */
 
-/* transmit at 41 kHz */
-#define FTRANS 41000
+/* transmit at 39.5 kHz */
+#define FTRANS 39500
 
 /* let the transducer ringdown for this many microseconds */
-#define RINGDOWN_US 2500
+#define RINGDOWN_US 2000
 
 /* stop listening to echos after this many microseconds */
 #define TIMEOUT_US 40000
 
-/* 
- * echo_tics will contain the echo time of the most recent 
- * measurement in clock tics, or zero if a measurement is
- * in progress or timed-out
- */
-extern volatile unsigned int echo_tics;
 
-void select_sensor(unsigned char sensor);
+inline unsigned char sensor_busy();
+inline unsigned int get_distance();
+inline void select_sensor(unsigned char sensor);
 void send_pulses(unsigned int pulses);
 
 #endif /* ULTRASONIC_H */

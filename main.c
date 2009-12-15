@@ -32,40 +32,18 @@
 #include <util/delay.h>
 #include "dimmer.h"
 #include "ultrasonic.h"
-#include "sched.h"
-
-state_t state = IDLE;
-extern volatile unsigned int echo_tics;
 
 int main(void) {
-	/* PULSING CODE
-	int brightness_period = 2000;
-	int elapsed_ms = 0;
-	*/
-
 	/* set up board-specific stuff */
 	bsp_setup();
 	
 	select_sensor(0);
 
 	while(1) {
-		/* PULSING CODE
-		if(elapsed_ms < brightness_period) {
-			set_brightness((float)elapsed_ms / brightness_period);
-		}
-		else if(elapsed_ms < 2 * brightness_period) {
-			set_brightness(1 - (float)(elapsed_ms - brightness_period) / 
-				brightness_period);
-		}
-		else 
-			elapsed_ms = 0;
-		elapsed_ms++;
-
-		_delay_ms(1);
-		*/
-
-		send_pulses(10);
-		_delay_ms(50);
+		send_pulses(20);
+		while(sensor_busy());
+		set_brightness((float)get_distance() / UINT16_MAX);
+		_delay_ms(100);
 	}
 	return 0;
 }

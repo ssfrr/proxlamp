@@ -29,5 +29,14 @@
  ********************************************/
 
 
-
 #include "proxlamp_r01_bsp.h"
+
+/* Board-Specific  Setup Functions */
+void bsp_setup();
+
+void clock_setup();
+void triac_timer_setup();
+void sensor_timer_setup();
+void pin_io_setup();
+void pulse_counter_setup();
+

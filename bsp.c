@@ -28,13 +28,14 @@
 
 
 
-#include "proxlamp_r01_bsp.h"
+#include "bsp.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 void bsp_setup() {
 	clock_setup();
 	triac_timer_setup();
 	sensor_timer_setup();
+	pulse_counter_setup();
 	pin_io_setup();
 	/* enable interupts */
 	sei();
@@ -48,19 +49,29 @@ void clock_setup(void) {
 
 void triac_timer_setup() {
 	/* run counter in normal mode */
-	TRIAC_CONF_A = 0x00;
+	TRIAC_CFG_A = 0x00;
 	/* set up 16-bit counter with prescalar of 8 */
-	TRIAC_CONF_B = (1 << CS11);
+	TRIAC_CFG_B = (1 << CS11);
 }
 
 void sensor_timer_setup() {
 	/* run counter in clear-on-compare mode */
-	SENSOR_CONF_A = (1 << WGM01);
+	SENSOR_CFG_A = (1 << WGM01);
 	/* set up 8-bit counter with no prescalar */
-	SENSOR_CONF_B = (1 << CS00);
+	SENSOR_CFG_B = (1 << CS00);
 	SENSOR_COMP = SENSOR_TCNT_MAX;
 	/* disable timer interrupts for this counter */
 	SENSOR_TIMSK &= ~SENSOR_INT_EN;
+}
+
+void pulse_counter_setup() {
+	/* run counter in clear-on-compare mode */
+	PULSE_COUNTER_CFG_A = (1 << WGM21);
+	/* set up 8-bit counter with no prescalar */
+	PULSE_COUNTER_CFG_B = (1 << CS20);
+	PULSE_COUNTER_COMP = PULSE_COUNTER_TCNT_MAX;
+	/* disable timer interrupts for this counter */
+	PULSE_COUNTER_TIMSK &= ~PULSE_COUNTER_INT_EN;
 }
 
 void pin_io_setup(void) {

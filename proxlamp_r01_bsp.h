@@ -105,6 +105,8 @@ typedef struct {
 #define TEST_PORT PORTD
 #define TEST_DD DDRD
 #define TEST_PIN (1 << PD1)
+#define SET_TEST_PIN() TEST_PORT |= TEST_PIN
+#define CLR_TEST_PIN() TEST_PORT &= ~TEST_PIN
 
 /* Interrupt Handlers */
 
@@ -112,6 +114,7 @@ typedef struct {
 #define INT_ZEROCROSS INT0_vect
 #define INT_TRIAC_TIMER TIMER1_OVF_vect
 #define INT_SENSOR_TIMER TIMER0_COMPA_vect
+#define INT_PULSE_COUNTER TIMER2_COMPA_vect
 
 /* Registers and Bitmasks */
 
@@ -120,8 +123,8 @@ typedef struct {
 #define TRIAC_TIFR TIFR1
 #define TRIAC_TCNT TCNT1
 #define TRIAC_COMP OCR1A
-#define TRIAC_CONF_A TCCR1A
-#define TRIAC_CONF_B TCCR1B
+#define TRIAC_CFG_A TCCR1A
+#define TRIAC_CFG_B TCCR1B
 
 /* Masks for Triac Timer Interrupts */
 #define TRIAC_INT_FLAG (1 << TOV1)
@@ -158,8 +161,8 @@ typedef struct {
 #define SENSOR_TIFR TIFR0
 #define SENSOR_TCNT TCNT0
 #define SENSOR_COMP OCR0A
-#define SENSOR_CONF_A TCCR0A
-#define SENSOR_CONF_B TCCR0B
+#define SENSOR_CFG_A TCCR0A
+#define SENSOR_CFG_B TCCR0B
 
 /* Masks for Sensor Pulse Timer */
 #define SENSOR_INT_FLAG (1 << OCF0A)
@@ -169,19 +172,28 @@ typedef struct {
 #define SENSOR_TIMER_INT_ENABLE() SENSOR_TIMSK |= SENSOR_INT_EN
 #define SENSOR_TIMER_INT_DISABLE() SENSOR_TIMSK &= ~SENSOR_INT_EN
 
+/* Registers for Pulse Counter */
+#define PULSE_COUNTER_TIMSK TIMSK2
+#define PULSE_COUNTER_TIFR TIFR2
+#define PULSE_COUNTER_TCNT TCNT2
+#define PULSE_COUNTER_COMP OCR2A
+#define PULSE_COUNTER_CFG_A TCCR2A
+#define PULSE_COUNTER_CFG_B TCCR2B
+
+/* Masks for Sensor Pulse Timer */
+#define PULSE_COUNTER_INT_FLAG (1 << OCF2A)
+#define PULSE_COUNTER_INT_EN (1 << OCIE2A)
+
+#define PULSE_COUNTER_INT_CLEARFLAG() PULSE_COUNTER_TIFR |= PULSE_COUNTER_INT_FLAG
+#define PULSE_COUNTER_INT_ENABLE() PULSE_COUNTER_TIMSK |= PULSE_COUNTER_INT_EN
+#define PULSE_COUNTER_INT_DISABLE() PULSE_COUNTER_TIMSK &= ~PULSE_COUNTER_INT_EN
+
 
 /* Board-Specific Constants */
 #define TRIAC_TCNT_MAX UINT16_MAX
 #define SENSOR_TCNT_MAX UINT8_MAX
+#define PULSE_COUNTER_TCNT_MAX UINT8_MAX
 #define TRIAC_TIME_DIV 3
 #define SENSOR_TIME_DIV 0
-
-/* Board-Specific  Setup Functions */
-void bsp_setup();
-
-void clock_setup();
-void triac_timer_setup();
-void sensor_timer_setup();
-void pin_io_setup();
 
 #endif /* PROXLAMP_BSP_H */
