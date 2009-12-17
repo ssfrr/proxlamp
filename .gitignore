@@ -3,3 +3,4 @@ tags
 *.o
 *.bak
 *.swp
+*.obj

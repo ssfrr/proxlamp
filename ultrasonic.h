@@ -42,10 +42,10 @@
 #define FTRANS 39500
 
 /* let the transducer ringdown for this many microseconds */
-#define RINGDOWN_US 2000
+#define RINGDOWN_US 2500
 
 /* stop listening to echos after this many microseconds */
-#define TIMEOUT_US 40000
+#define TIMEOUT_US 12000
 
 
 inline unsigned char sensor_busy();

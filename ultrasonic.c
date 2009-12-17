@@ -80,7 +80,6 @@ inline unsigned char sensor_busy() {
 void send_pulses(unsigned int pulses) {
 	if(sensor_busy())
 		return;
-	SET_TEST_PIN();
 	state = PULSING;
 	/* set the timer compare value to the pulse length */
 	SENSOR_COMP = PULSE_TICS;
@@ -92,6 +91,7 @@ void send_pulses(unsigned int pulses) {
 	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
 	SENSOR_TIMER_INT_ENABLE();
+	SET_TEST_PIN();
 }
 
 /* 
@@ -127,11 +127,12 @@ ISR(INT_SENSOR_TIMER) {
 
 		case WAITING:
 		case RECEIVING:
-		if(periods > TIMEOUT_PERIODS) {
+		if(periods >= TIMEOUT_PERIODS) {
 			/* we've waited too long, they're not coming */
 			RECEIVE_INT_DISABLE();
 			SENSOR_TIMER_INT_DISABLE();
 			state = IDLE;
+			CLR_TEST_PIN();
 		}
 		else
 			periods++;
@@ -155,6 +156,7 @@ ISR(INT_RECEIVE) {
 
 	unsigned char pulse_tics = PULSE_COUNTER_TCNT;
 	PULSE_COUNTER_TCNT = 0;
+	SET_TEST_PIN();
 
 	switch(state) {
 		case WAITING:
@@ -181,6 +183,7 @@ ISR(INT_RECEIVE) {
 				echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
 					<< SENSOR_TIME_DIV;
 				RECEIVE_INT_DISABLE();
+				PULSE_COUNTER_INT_DISABLE();
 				SENSOR_TIMER_INT_DISABLE();
 				state = IDLE;
 				CLR_TEST_PIN();

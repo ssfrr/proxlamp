@@ -21,11 +21,23 @@ $(TARGET).hex:
 burn: $(TARGET).hex
 	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU)p $(AVROPTS) -Uflash:w:$(TARGET).hex
 
+debugwire: $(TARGET).hex
+	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU)p $(AVROPTS) -Uhfuse:w:0x9F:m
+
+isp: $(TARGET).hex
+	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU)p $(AVROPTS) -Uhfuse:w:0xDF:m
+
+read: $(TARGET).hex
+	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU)p $(AVROPTS) -v
+
+
 clean :
 	rm -f *.hex *.obj *.o
 
 depend:
 	makedepend -I/usr/lib/avr/include -- $(CFLAGS) -- $(SOURCES)
+
+.SECONDARY: proxlamp.obj
 
 # DO NOT DELETE
 
