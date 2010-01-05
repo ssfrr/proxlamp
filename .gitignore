@@ -1,1 +1,5 @@
 proxlamp.hex
+*.o
+*.obj
+*.bak
+tags
