@@ -1,9 +1,10 @@
 /*********************************************
  *
- * main.c
+ * dimmer.h
  * 
- * Main Application Code for ProxLamp Firmware
+ * Include this to set brightness
  * 
+ *
  * Copyright 2009 Spencer Russell
  * Released under the GPLv3
  *
@@ -27,24 +28,12 @@
 
 
 
-/* include BSP header before delay.h for clock definition */
-#include "bsp.h"
-#include <util/delay.h>
-#include "dimmer.h"
-#include "ultrasonic.h"
+#ifndef DIMMER_H
+#define DIMMER_H
 
-int main(void) {
-	/* set up board-specific stuff */
-	bsp_setup();
-	
-	select_sensor(0);
+#include <stdint.h>
 
-	while(1) {
-		send_pulses(20);
-		while(sensor_busy());
-		set_brightness((float)get_distance() / UINT16_MAX);
-		_delay_ms(100);
-	}
-	return 0;
-}
+/* set the brightness of the lamp (from 0-UINT16_MAX) */
+void set_brightness(uint16_t brightness);
 
+#endif /* DIMMER_H */

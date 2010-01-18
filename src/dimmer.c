@@ -37,16 +37,22 @@
 
 /* cycles to hold the triac high for triggering */
 const uint16_t TRIGGER_TIME = 1E-4 * F_CPU;
-volatile uint32_t pulse_width;
+volatile uint32_t wait_time;
 
-/* measure the half-cycle duration in cycles */
-/* 8.3ms in my apartment @ 8MHz = 66400 cycles */
+/* 8.3ms in my apartment @ 8MHz = 66400 cycles 
+ * it's rounded down a bit to make sure it doesn't wait all the way
+ * until the next cycle*/
 /* TODO: set halfcycle dynamically */
-uint32_t ac_halfcycle = 66400;
+uint32_t ac_halfcycle = 65500;
 
 /* Function Definitions */
-void set_brightness(float brightness) {
-	pulse_width = 0.95 * brightness * ac_halfcycle;
+void set_brightness(uint16_t brightness) {
+	/* don't let brightness get all the way to 0xFFFF, because
+	 * the TRIAC won't have time to trigger */
+	/* TODO: turn on triac immediately for small wait times*/
+	if(brightness > 0xFFF4)
+		brightness = 0xFFF4;
+	wait_time = (UINT16_MAX - (uint32_t)brightness) * (uint32_t)ac_halfcycle / UINT16_MAX;
 }
 
 /* schedule a timer interrupt in cycles */
@@ -57,15 +63,14 @@ inline void set_triac_alarm(uint32_t cycles) {
 /* zero-crossing interrupt handler */
 
 ISR(INT_ZEROCROSS) {
-	/* sample 5 more times to check for noise */
+	/* sample 3 more times to check for noise */
 	char val = ZEROCROSS_PINS & ZEROCROSS_PIN;
-	int n = 50;
+	int n = 3;
 	while(n--)
 		if((ZEROCROSS_PINS & ZEROCROSS_PIN) != val)
 			return;
-	TEST_PORT ^= TEST_PIN;
 	TRIAC_PORT &= ~TRIAC_PIN;
-	set_triac_alarm(pulse_width);
+	set_triac_alarm(wait_time);
 
 	/* write a 1 to clear any pending timer interrupts */
 	TRIAC_TIFR |= TRIAC_INT_FLAG;

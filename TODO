@@ -1,0 +1,11 @@
+create footprint for:
+fuse/fuseholders
+
+check footprints for:
+transformer
+bridge
+1n4004
+
+select components (and check against footprints):
+680u caps
+100n caps for power supply

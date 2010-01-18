@@ -41,13 +41,15 @@ typedef enum {
 } state_t;
 
 state_t state = IDLE;
-static volatile unsigned int periods;
-volatile unsigned int echo_tics = 0;
+static volatile uint16_t periods;
+static volatile uint32_t echo_tics = 0;
+static volatile uint16_t echo_periods = 0;
 
 /* calculate the counter value for the transmit frequency */
 #define PULSE_TICS ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
 
-/* calculate the maximum and minmum thresholds to recieve pulses */
+/* calculate the maximum and minmum thresholds to recieve pulses 
+ * (50% - 150% of nominal) */
 #define PULSE_TICS_MAX (PULSE_TICS * 3) >> 1
 #define PULSE_TICS_MIN PULSE_TICS >> 1
 
@@ -60,24 +62,29 @@ volatile unsigned int echo_tics = 0;
 #define TIMEOUT_TICS TIMEOUT_US * F_CPU / 1000000
 
 
-/* return the last valid distance as 16-bit unsigned int 
- * 65536 represents the furthest distance, set by TIMEOUT_US */
-inline unsigned int get_distance() {
-	return (unsigned int)(((unsigned long)echo_tics * UINT16_MAX) / TIMEOUT_TICS);
+#define TICS_PER_PERIOD SENSOR_TCNT_MAX >> SENSOR_TIME_DIV
+
+#define UM_PER_PERIOD 5332
+
+/* return the distance in mm */
+uint16_t get_distance() {
+	//return (uint16_t)((echo_tics * UINT16_MAX) / TIMEOUT_TICS);
+	return (uint16_t)((uint32_t)echo_periods * UM_PER_PERIOD / 1000);
 }
 
 /* set up the hardware for the proper sensor */
-inline void select_sensor(unsigned char sensor) {
+void select_sensor(unsigned char sensor) {
 	SENSOR_SELECT(sensor);
 }
 
 /* return whether or not the sensor is ready to start another reading */
-inline unsigned char sensor_busy() {
+unsigned char sensor_busy() {
 	return (state != IDLE);
 }
 
 /* send a number of ultrasonic pulses at FTRANS Hz */
 void send_pulses(unsigned int pulses) {
+	SET_TEST_PIN();
 	if(sensor_busy())
 		return;
 	state = PULSING;
@@ -91,7 +98,6 @@ void send_pulses(unsigned int pulses) {
 	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
 	SENSOR_TIMER_INT_ENABLE();
-	SET_TEST_PIN();
 }
 
 /* 
@@ -156,7 +162,6 @@ ISR(INT_RECEIVE) {
 
 	unsigned char pulse_tics = PULSE_COUNTER_TCNT;
 	PULSE_COUNTER_TCNT = 0;
-	SET_TEST_PIN();
 
 	switch(state) {
 		case WAITING:
@@ -182,6 +187,7 @@ ISR(INT_RECEIVE) {
 				/* we've received 3 proper-length pulses in a row, it's an echo */
 				echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
 					<< SENSOR_TIME_DIV;
+				echo_periods = periods;
 				RECEIVE_INT_DISABLE();
 				PULSE_COUNTER_INT_DISABLE();
 				SENSOR_TIMER_INT_DISABLE();

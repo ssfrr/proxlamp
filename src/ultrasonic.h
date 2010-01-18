@@ -42,15 +42,15 @@
 #define FTRANS 39500
 
 /* let the transducer ringdown for this many microseconds */
-#define RINGDOWN_US 2500
+#define RINGDOWN_US 1500
 
 /* stop listening to echos after this many microseconds */
-#define TIMEOUT_US 12000
+#define TIMEOUT_US 20000
 
 
-inline unsigned char sensor_busy();
-inline unsigned int get_distance();
-inline void select_sensor(unsigned char sensor);
+unsigned char sensor_busy();
+uint16_t get_distance();
+void select_sensor(unsigned char sensor);
 void send_pulses(unsigned int pulses);
 
 #endif /* ULTRASONIC_H */

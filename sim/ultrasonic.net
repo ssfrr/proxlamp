@@ -1,0 +1,18 @@
+* Z:\home\srussell\projects\active\ProxLamp\sim\ultrasonic.asc
+C1 N001 N002 2.4n V=50 Irms=0 Rser=1k Lser=0
+L1 N001 N002 300µ Ipk=0.18 Rser=5.42 Rpar=0 Cpar=0
+V1 N001 0 5
+V2 N004 0 PULSE(0 5 0 1u 1u {P/2} {P})
+Q1 N003 N005 0 0 2N3904
+D1 N002 N003 1N914
+R1 N005 N004 3.3k
+R2 N001 N004 10k
+.model D D
+.lib C:\Program Files\LTC\LTspiceIV\lib\cmp\standard.dio
+.model NPN NPN
+.model PNP PNP
+.lib C:\Program Files\LTC\LTspiceIV\lib\cmp\standard.bjt
+.tran 500u startup
+.step param P 5u 30u 1u
+.backanno
+.end

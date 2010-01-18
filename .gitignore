@@ -4,3 +4,8 @@ tags
 *.bak
 *.swp
 *.obj
+.raw
+*~
+*-
+*.log
+*.raw

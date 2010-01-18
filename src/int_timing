@@ -1,0 +1,30 @@
+Interrupt Durations and Calling frequency:
+
+timer interrupt:
+pulsing:
+4.9us, called every 12.2us
+
+ringing and waiting for echo:
+3.4us, called every 31us
+
+pulse counter interrupt:
+1.8us, called about 2ms into a measurement, and again sometimes while receiving pulses
+
+receive pin ext interrupt:
+4us, called 2ms into measurement and 3-5 times while receiving pulses (should be around 12.2us apart)
+last time it takes around 8us
+
+zerocross interrupt:
+9.1us, called 8.2ms apart for positive half of AC, 8.5ms for negative
+
+triac timer interrupt:
+1.6us, after 1.6ms, then a 2.1us pulse 100us later
+
+General timings:
+
+wait time for 1m object:
+2m / 344m/s = 5.8ms
+
+sensor timer period time: 2^8 / 8000000 = 32us
+
+period count for 1m object = 5.8ms / 32us = 181.25
