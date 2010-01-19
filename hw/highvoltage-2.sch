@@ -67,7 +67,7 @@ refdes=H201
 T 50000 43600 5 10 1 1 0 6 1
 value=LAMP-2
 T 49200 43800 5 10 0 1 0 0 1
-footprint=hole_m3
+footprint=wirehole_16ga
 }
 C 49200 44900 1 270 1 hole-1.sym
 {
@@ -78,7 +78,7 @@ refdes=H202
 T 49900 44700 5 10 1 1 0 6 1
 value=LAMP-1
 T 49200 44900 5 10 0 1 0 0 1
-footprint=hole_m3
+footprint=wirehole_16ga
 }
 N 46600 46900 46600 47100 4
 C 47800 46100 1 90 0 resistor-1.sym

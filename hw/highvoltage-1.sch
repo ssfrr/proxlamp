@@ -22,7 +22,7 @@ refdes=H101
 T 43700 44000 5 10 1 1 0 0 1
 value=AC_GND
 T 43700 44000 5 10 0 1 0 0 1
-footprint=hole_m3
+footprint=wirehole_16ga
 }
 C 43700 45800 1 90 0 hole-1.sym
 {
@@ -33,7 +33,7 @@ refdes=H102
 T 43700 45800 5 10 1 1 0 0 1
 value=AC_NEUT
 T 43700 45800 5 10 0 1 0 0 1
-footprint=hole_m3
+footprint=wirehole_16ga
 }
 C 43700 46800 1 90 0 hole-1.sym
 {
@@ -44,7 +44,7 @@ refdes=H103
 T 43700 46800 5 10 1 1 0 0 1
 value=AC_HOT
 T 43700 46800 5 10 0 1 0 0 1
-footprint=hole_m3
+footprint=wirehole_16ga
 }
 C 47800 46300 1 0 0 bridge-1.sym
 {
