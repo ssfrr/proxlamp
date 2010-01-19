@@ -1,0 +1,19 @@
+Flat:
+PCB setup: 40
+
+
+
+Per unit:
+for prefab ultrasonic sensors:
+	sensors - 8*30 = 240, 
+for DIY ultrasonic sensors:
+	sensors - 8*5 = 40
+microcontroller = 5
+pcb = 6
+power supply = 20
+triac = 5
+misc. parts = 5
+power cord = 2
+enclosure = 15
+
+total: 240+5+6+20+5+5+2+15 = 298
