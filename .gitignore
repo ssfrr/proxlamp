@@ -9,3 +9,9 @@ tags
 *-
 *.log
 *.raw
+*.cmd
+*.backup.*
+*.new.pcb
+*.net
+*.bak0
+*.savedbackup.pcb
