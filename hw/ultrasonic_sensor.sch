@@ -132,7 +132,7 @@ device=CONNECTOR_2
 T 49000 48400 5 10 1 1 0 6 1
 refdes=CONN1
 T 49000 47600 5 10 0 0 0 0 1
-footprint=HEADER2_1
+footprint=header2x1
 }
 C 42800 41900 1 0 0 connector2-1.sym
 {
@@ -141,7 +141,7 @@ device=CONNECTOR_2
 T 43400 42600 5 10 1 1 0 0 1
 refdes=CONN2
 T 42800 41900 5 10 0 0 0 0 1
-footprint=HEADER2_1
+footprint=header2x1
 }
 C 47000 47300 1 0 0 gnd-1.sym
 N 47300 48100 46300 48100 4
