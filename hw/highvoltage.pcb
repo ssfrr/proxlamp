@@ -1,5 +1,5 @@
 # release: pcb 20091103
-# date:    Wed Feb  3 16:11:09 2010
+# date:    Thu Feb  4 09:08:34 2010
 # user:    srussell (Spencer Russell,,,)
 # host:    optimus
 
@@ -802,7 +802,7 @@ Via[25000 20000 18400 4000 0 12500 "" "thermal(0X)"]
 Via[25000 325000 18400 4000 0 12500 "" "thermal(0X,1X)"]
 Via[365000 325000 18400 4000 0 12500 "" "thermal(0X)"]
 
-Element["" "transformer-dualpri-dualsec" "T101" "unknown" 105000 179000 31000 -69000 0 100 ""]
+Element["" "transformer-dualpri-dualsec" "T101" "160G24" 105000 179000 31000 -69000 0 100 ""]
 (
 	Pin[0 0 10000 3000 10500 6000 "" "1" "edge2"]
 	Pin[25000 0 10000 3000 10500 6000 "" "2" "edge2"]
@@ -843,7 +843,7 @@ Element["hidename" "wirehole_16ga" "H201" "LAMP-2" 65000 300000 -6900 14000 0 10
 
 	)
 
-Element["" "DIP6" "U201" "unknown" 350000 265000 -8000 10000 3 100 ""]
+Element["" "DIP6" "U201" "MOC3022M" 350000 265000 -8000 10000 3 100 ""]
 (
 	Pin[0 0 6000 3000 6600 2800 "1" "1" "square"]
 	Pin[-10000 0 6000 3000 6600 2800 "2" "2" "thermal(0X)"]
@@ -890,17 +890,20 @@ Element["" "1W_Carbon_Resistor" "R204" "1_MEG" 357840 238550 -50390 -4710 0 150 
 
 	)
 
-Element["" "diode-bridge" "U101" "KBU605" 176000 16000 -37000 13000 0 100 ""]
+Element["" "to220" "D201" "BTA04-700TRG" 305000 290000 9000 8000 1 100 ""]
 (
-	Pin[-20000 0 11500 2402 12100 6000 "~" "1" "edge2"]
-	Pin[-40000 0 11500 2402 12100 6000 "~" "2" "edge2"]
-	Pin[-60000 0 11500 2402 12100 6000 "-" "3" "edge2"]
-	Pin[0 0 11500 2402 12100 6000 "+" "4" "edge2"]
-	ElementLine [7500 2500 0 10000 1000]
-	ElementLine [-67500 -7500 -67500 10000 1000]
-	ElementLine [-67000 10000 7500 10000 1000]
-	ElementLine [7500 -7500 7500 10000 1000]
-	ElementLine [-67500 -7500 7500 -7500 1000]
+	Pin[0 0 7000 3000 7600 4000 "" "1" "square"]
+	Pin[0 -10000 7000 3000 7600 4000 "" "2" ""]
+	Pin[0 -20000 7000 3000 7600 4000 "" "3" ""]
+	ElementLine [-12000 -17000 -6000 -17000 1000]
+	ElementLine [-12000 -3000 -6000 -3000 1000]
+	ElementLine [-12000 10000 -6000 10000 1500]
+	ElementLine [-6000 -30000 -6000 10000 1500]
+	ElementLine [-12000 -30000 -6000 -30000 1500]
+	ElementLine [-12000 10000 6000 10000 1500]
+	ElementLine [6000 -30000 6000 10000 1500]
+	ElementLine [-12000 -30000 6000 -30000 1500]
+	ElementLine [-12000 -30000 -12000 10000 1500]
 
 	)
 
@@ -1066,7 +1069,7 @@ Element["" "diode-wide-leads" "D104" "1N4004" 380000 40000 -40000 -15000 0 100 "
 
 	)
 
-Element["hidename" "HEADER6_2" "CONN201" "unknown" 355000 220000 -5000 -21000 0 100 ""]
+Element["hidename" "HEADER6_2" "CONN201" "10-89-7061" 355000 220000 -5000 -21000 0 100 ""]
 (
 	Pin[0 0 6500 3000 7100 3800 "1" "1" "square,edge2,thermal(0X)"]
 	Pin[0 -10000 6500 3000 7100 3800 "2" "2" "edge2"]
@@ -1144,20 +1147,17 @@ Element["" "diode-wide-leads" "D103" "1N4004" 340000 115000 -20000 -10000 0 100 
 
 	)
 
-Element["" "to220" "D201" "unknown" 305000 290000 9000 8000 1 100 ""]
+Element["" "diode-bridge" "U101" "KBU605" 176000 16000 -37000 13000 0 100 ""]
 (
-	Pin[0 0 7000 3000 7600 4000 "" "1" "square"]
-	Pin[0 -10000 7000 3000 7600 4000 "" "2" ""]
-	Pin[0 -20000 7000 3000 7600 4000 "" "3" ""]
-	ElementLine [-12000 -17000 -6000 -17000 1000]
-	ElementLine [-12000 -3000 -6000 -3000 1000]
-	ElementLine [-12000 10000 -6000 10000 1500]
-	ElementLine [-6000 -30000 -6000 10000 1500]
-	ElementLine [-12000 -30000 -6000 -30000 1500]
-	ElementLine [-12000 10000 6000 10000 1500]
-	ElementLine [6000 -30000 6000 10000 1500]
-	ElementLine [-12000 -30000 6000 -30000 1500]
-	ElementLine [-12000 -30000 -12000 10000 1500]
+	Pin[0 0 11500 2000 12100 6000 "+" "1" "edge2"]
+	Pin[-20000 0 11500 2000 12100 6000 "~" "2" "edge2"]
+	Pin[-40000 0 11500 2000 12100 6000 "~" "3" "edge2"]
+	Pin[-60000 0 11500 2000 12100 6000 "-" "4" "edge2"]
+	ElementLine [7500 2500 0 10000 1000]
+	ElementLine [-67500 -7500 -67500 10000 1000]
+	ElementLine [-67000 10000 7500 10000 1000]
+	ElementLine [7500 -7500 7500 10000 1000]
+	ElementLine [-67500 -7500 7500 -7500 1000]
 
 	)
 Layer(1 "component")
@@ -1359,27 +1359,27 @@ NetList()
 	)
 	Net("unnamed_net2" "(unknown)")
 	(
-		Connect("T101-5")
+		Connect("C101-1")
+		Connect("D101-2")
 		Connect("U101-1")
+		Connect("U102-1")
 	)
 	Net("unnamed_net3" "(unknown)")
 	(
-		Connect("T101-8")
-		Connect("U101-2")
+		Connect("C102-2")
+		Connect("D102-1")
+		Connect("U101-4")
+		Connect("U103-2")
 	)
 	Net("unnamed_net4" "(unknown)")
 	(
-		Connect("C101-1")
-		Connect("D101-2")
-		Connect("U101-4")
-		Connect("U102-1")
+		Connect("T101-8")
+		Connect("U101-3")
 	)
 	Net("unnamed_net5" "(unknown)")
 	(
-		Connect("C102-2")
-		Connect("D102-1")
-		Connect("U101-3")
-		Connect("U103-2")
+		Connect("T101-5")
+		Connect("U101-2")
 	)
 	Net("unnamed_net6" "(unknown)")
 	(
