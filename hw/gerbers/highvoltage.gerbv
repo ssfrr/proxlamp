@@ -1,0 +1,8 @@
+(define-layer! 6 (cons 'filename "highvoltage.backmask.gbr")(cons 'color #(65280 32512 29440)))
+(define-layer! 5 (cons 'filename "highvoltage.back.gbr")(cons 'color #(29440 29440 56832)))
+(define-layer! 4 (cons 'filename "highvoltage.front.gbr")(cons 'color #(29952 61952 26368)))
+(define-layer! 3 (cons 'filename "highvoltage.frontmask.gbr")(cons 'color #(0 49920 49920)))
+(define-layer! 2 (cons 'filename "highvoltage.frontsilk.gbr")(cons 'color #(54528 64768 13056)))
+(define-layer! 1 (cons 'filename "highvoltage.plated-drill.cnc")(cons 'color #(53504 6912 26624)))
+(define-layer! 0 (cons 'filename "highvoltage.fab.gbr")(cons 'color #(49408 0 57344)))
+(define-layer! -1 (cons 'filename "/home/srussell/projects/active/ProxLamp/hw/gerbers")(cons 'color #(0 0 0)))

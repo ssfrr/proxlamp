@@ -46,19 +46,6 @@ value=AC_HOT
 T 43700 46800 5 10 0 1 0 0 1
 footprint=wirehole_16ga
 }
-C 47800 46300 1 0 0 bridge-1.sym
-{
-T 48000 47300 5 10 1 1 0 0 1
-refdes=U101
-T 48000 47700 5 10 0 0 0 0 1
-device=bridge
-T 48000 48100 5 10 0 0 0 0 1
-symversion=0.1
-T 47800 46300 5 10 0 1 0 0 1
-footprint=diode-bridge
-T 48050 46100 5 10 1 1 0 0 1
-value=KBU605
-}
 N 45400 45800 45400 47000 4
 N 45400 45800 45700 45800 4
 N 43700 46000 45700 46000 4
@@ -81,7 +68,7 @@ device=7805
 T 51600 47400 5 10 1 1 0 6 1
 refdes=U102
 T 50200 46400 5 10 0 1 0 0 1
-footprint=TO220W
+footprint=to220
 T 51100 46300 5 10 1 1 0 0 1
 value=L7805
 }
@@ -191,7 +178,7 @@ device=7905
 T 51600 44300 5 10 1 1 180 0 1
 refdes=U103
 T 50500 43550 5 10 0 0 180 6 1
-footprint=TO220W
+footprint=to220
 T 50500 43950 5 10 0 0 180 6 1
 symversion=1.0
 T 51200 45100 5 10 1 1 0 0 1
@@ -255,6 +242,8 @@ T 46300 44500 5 10 1 1 0 0 1
 refdes=T101
 T 45700 44700 5 10 0 0 0 0 1
 footprint=transformer-dualpri-dualsec
+T 45700 44700 5 10 1 1 0 0 1
+value=160G24
 }
 C 47200 47150 1 0 0 gnd-1.sym
 N 46900 47500 47300 47500 4
@@ -298,4 +287,17 @@ T 45200 44300 5 10 0 0 0 0 1
 device=none
 T 45900 43700 5 10 0 1 0 1 1
 value=OUTPUT
+}
+C 47800 46300 1 0 0 bridge-sfr.sym
+{
+T 48000 47300 5 10 1 1 0 0 1
+refdes=U101
+T 48000 47700 5 10 0 0 0 0 1
+device=bridge
+T 48000 48100 5 10 0 0 0 0 1
+symversion=0.1
+T 48100 46100 5 10 1 1 0 0 1
+value=KBU605
+T 47800 46300 5 10 0 2 0 0 1
+footprint=diode-bridge
 }
