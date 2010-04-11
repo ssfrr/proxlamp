@@ -34,20 +34,20 @@
 #include "ultrasonic.h"
 
 int main(void) {
+	uint16_t brightness = UINT16_MAX / 2;
+	//uint16_t increment = UINT16_MAX / 500;
 	/* set up board-specific stuff */
 	bsp_setup();
 	
-	select_sensor(0);
+	//select_sensor(0);
 
 	while(1) {
-		send_pulses(20);
-		while(sensor_busy());
-		uint16_t distance = get_distance();
-		if(distance > 2000)
-			set_brightness(0);
-		else
-			set_brightness(UINT16_MAX - distance * (UINT16_MAX / 2000) );
-		_delay_ms(300);
+		//send_pulses(20);
+		//while(sensor_busy());
+		//uint16_t distance = get_distance();
+		//brightness += increment;
+		set_brightness(brightness);
+		_delay_ms(10);
 	}
 	return 0;
 }

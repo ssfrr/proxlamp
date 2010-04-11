@@ -29,7 +29,7 @@
  ********************************************/
 
 
-#include "proxlamp_r01_bsp.h"
+#include "proxlamp_r02_bsp.h"
 
 /* Board-Specific  Setup Functions */
 void bsp_setup();
