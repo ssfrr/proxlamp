@@ -31,15 +31,6 @@
 #ifndef ULTRASONIC_H
 #define UlTRASONIC_H
 
-/* 
- * impulse near receiver (hand clap) causes the receiver
- * to resonate at 41kHz, maximum amplitude around 150mV P-P.
- *
- * noise floor seems to be around 60mV P-P, with a 6mV DC offset
- */
-
-/* transmit at 39.5 kHz */
-#define FTRANS 39500
 
 /* let the transducer ringdown for this many microseconds */
 #define RINGDOWN_US 1500
@@ -48,9 +39,9 @@
 #define TIMEOUT_US 20000
 
 
-unsigned char sensor_busy();
-uint16_t get_distance();
-void select_sensor(unsigned char sensor);
-void send_pulses(unsigned int pulses);
+uint8_t sensor_busy(void);
+uint16_t get_distance(void);
+void select_sensor(uint8_t sensor);
+void start_reading(void);
 
 #endif /* ULTRASONIC_H */

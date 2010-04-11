@@ -31,11 +31,11 @@
 #include "bsp.h"
 #include <util/delay.h>
 #include "dimmer.h"
-#include "ultrasonic.h"
+//#include "ultrasonic.h"
 
 int main(void) {
-	uint16_t brightness = UINT16_MAX / 2;
-	//uint16_t increment = UINT16_MAX / 500;
+	uint16_t brightness = 0;
+	uint16_t increment = UINT16_MAX / 500;
 	/* set up board-specific stuff */
 	bsp_setup();
 	
@@ -45,7 +45,7 @@ int main(void) {
 		//send_pulses(20);
 		//while(sensor_busy());
 		//uint16_t distance = get_distance();
-		//brightness += increment;
+		brightness += increment;
 		set_brightness(brightness);
 		_delay_ms(10);
 	}

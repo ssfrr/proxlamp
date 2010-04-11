@@ -32,32 +32,32 @@
 #include <avr/interrupt.h>
 #include "ultrasonic.h"
 
+/* 
+ * Sensor Sequence:
+ *
+ * 1. Initiate reading by bringing sensor trigger pin high, start counting time 
+ * 2. Wait for sensor output pin to go low, indicating end of
+ *    pulse transmission
+ * 3. Bring sensor trigger line low
+ * 4. Wait for sensor output pin to go high, indicating echo receipt
+ * 5. store counter value, wait for recovery time
+ * 6. idle state
+ *
+ */
+
 typedef enum {
 	IDLE,
 	PULSING,
-	IGNORING,
-	WAITING,
-	RECEIVING
+	LISTENING,
+	RECEIVING,
+	RECOVERING
 } state_t;
 
 state_t state = IDLE;
 static volatile uint16_t periods;
 static volatile uint32_t echo_tics = 0;
 static volatile uint16_t echo_periods = 0;
-
-/* calculate the counter value for the transmit frequency */
-#define PULSE_TICS ((F_CPU / FTRANS / 2) >> SENSOR_TIME_DIV)
-
-/* calculate the maximum and minmum thresholds to recieve pulses 
- * (50% - 150% of nominal) */
-#define PULSE_TICS_MAX (PULSE_TICS * 3) >> 1
-#define PULSE_TICS_MIN PULSE_TICS >> 1
-
-#define RINGDOWN_PERIODS (RINGDOWN_US * (F_CPU / 1000000) \
-		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
-
-#define TIMEOUT_PERIODS (TIMEOUT_US* (F_CPU / 1000000) \
-		/ (SENSOR_TCNT_MAX >> SENSOR_TIME_DIV))
+static selected_sensor = 0;
 
 #define TIMEOUT_TICS TIMEOUT_US * F_CPU / 1000000
 
@@ -67,37 +67,39 @@ static volatile uint16_t echo_periods = 0;
 #define UM_PER_PERIOD 5332
 
 /* return the distance in mm */
-uint16_t get_distance() {
+uint16_t get_distance(void) {
 	//return (uint16_t)((echo_tics * UINT16_MAX) / TIMEOUT_TICS);
 	return (uint16_t)((uint32_t)echo_periods * UM_PER_PERIOD / 1000);
 }
 
 /* set up the hardware for the proper sensor */
-void select_sensor(unsigned char sensor) {
+void select_sensor(uint8_t sensor) {
 	SENSOR_SELECT(sensor);
+	selected_sensor = sensor;
 }
 
 /* return whether or not the sensor is ready to start another reading */
-unsigned char sensor_busy() {
+uint8_t sensor_busy() {
 	return (state != IDLE);
 }
 
-/* send a number of ultrasonic pulses at FTRANS Hz */
-void send_pulses(unsigned int pulses) {
-	SET_TEST_PIN();
+/* 
+ * start a sensor measurement, begin counting, and start waiting for 
+ * end of transmission 
+ */
+void start_reading(void) {
 	if(sensor_busy())
 		return;
+	SET_TEST_PIN();
 	state = PULSING;
-	/* set the timer compare value to the pulse length */
-	SENSOR_COMP = PULSE_TICS;
-	/* we're actually counting half-cycles */
-	periods = (pulses << 1) + 1;
-	SET_SENSOR_SEND();
+	SENSOR_COMP = SENSOR_TCNT_MAX;
 	SENSOR_TCNT = 0;
+	periods = 0;
 	/* clear any existing sensor timer flags */
 	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
 	SENSOR_TIMER_INT_ENABLE();
+	RECEIVE_INT_ENABLE();
 }
 
 /* 
@@ -105,45 +107,12 @@ void send_pulses(unsigned int pulses) {
  * SENSOR_COMP. The counter is automatically set to 0.
  */
 ISR(INT_SENSOR_TIMER) {
+	periods++;
 	switch(state) {
 
 		case PULSING:
-		if(--periods) {
-			/* while we still have pulses to send */
-			TOGGLE_PULSE_PIN();
-		}
-		else {
-			/* now we wait a little longer for the resonance to die down*/
-			state = IGNORING;
-			/* we're going to count how many overflows occur */
-			SENSOR_COMP = SENSOR_TCNT_MAX;
-		}
-		break;
-
-		case IGNORING:
-		if(periods >= RINGDOWN_PERIODS) {
-			/* ringing should be gone by now */
-			state = WAITING;
-			RECEIVE_INT_ENABLE();
-			periods++;
-		}
-		else
-			periods++;
-		break;
-
-		case WAITING:
+		case LISTENING:
 		case RECEIVING:
-		if(periods >= TIMEOUT_PERIODS) {
-			/* we've waited too long, they're not coming */
-			RECEIVE_INT_DISABLE();
-			SENSOR_TIMER_INT_DISABLE();
-			state = IDLE;
-			CLR_TEST_PIN();
-		}
-		else
-			periods++;
-		break;
-
 		default:
 		break;
 	}
@@ -151,7 +120,7 @@ ISR(INT_SENSOR_TIMER) {
 
 /* if we hit this interrupt, then we didn't get another pulse in time */
 ISR(INT_PULSE_COUNTER) {
-	state = WAITING;
+	state = LISTENING;
 	PULSE_COUNTER_INT_DISABLE();
 }
 
@@ -164,19 +133,17 @@ ISR(INT_RECEIVE) {
 	PULSE_COUNTER_TCNT = 0;
 
 	switch(state) {
-		case WAITING:
+		case PULSING:
+			if(!TEST_RECEIVE_PIN())
+				CLR_SENSOR_PIN(sensor);
 			/* first pulse of a group */
-			PULSE_COUNTER_COMP = PULSE_TICS_MAX;
-			received_edges = 1;
-			state = RECEIVING;
-			PULSE_COUNTER_INT_ENABLE();
 			break;
 
 		case RECEIVING:
 			/* we've recently received another pulse, check how long ago */
 			if(pulse_tics < PULSE_TICS_MIN) {
 				/* pulse was too short, reset and wait for another */
-				state = WAITING;
+				state = LISTENING;
 				PULSE_COUNTER_INT_DISABLE();
 			}
 			else {
