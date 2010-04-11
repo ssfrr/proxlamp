@@ -85,20 +85,18 @@ typedef struct {
 
 #define SENSOR_TRIGGER_PORT PORTD
 #define SENSOR_TRIGGER_DD DDRD
-#define TRIGGER_SENSOR(n) \
-	do { \
-		SENSOR_TRIGGER_PORT |= (1 << (n+4)); \
-	} while(0)
+#define SENSOR_TRIGGER_MASK (0x0F << 4)
+#define CLR_TRIGGER_PINS() do { SENSOR_TRIGGER_PORT &= ~SENSOR_TRIGGER_MASK; } while(0)
+#define SET_TRIGGER_PINS() do { SENSOR_TRIGGER_PORT |= SENSOR_TRIGGER_MASK; } while(0)
+#define TRIGGER_SENSOR(n) do { SENSOR_TRIGGER_PORT |= (1 << (n+4)); } while(0)
 
-#define RELEASE_SENSOR(n) \
-	do { \
-		SENSOR_TRIGGER_PORT &= !(1 << (n+4)); \
-	} while(0)
+#define RELEASE_SENSOR(n) do { SENSOR_TRIGGER_PORT &= !(1 << (n+4)); } while(0)
 
 #define RECEIVE_PORT PORTD
 #define RECEIVE_DD DDRD
 #define RECEIVE_PINS PIND
 #define RECEIVE_PIN (1 << PD3)
+#define TEST_RECEIVE_PIN (RECEIVE_PORT & RECEIVE_PIN)
 
 #define ZEROCROSS_PORT PORTD
 #define ZEROCROSS_DD DDRD
@@ -108,8 +106,8 @@ typedef struct {
 #define TEST_PORT PORTD
 #define TEST_DD DDRD
 #define TEST_PIN (1 << PD1)
-#define SET_TEST_PIN() TEST_PORT |= TEST_PIN
-#define CLR_TEST_PIN() TEST_PORT &= ~TEST_PIN
+#define SET_TEST_PIN() do { TEST_PORT |= TEST_PIN; } while(0)
+#define CLR_TEST_PIN() do { TEST_PORT &= ~TEST_PIN; } while(0)
 
 /* Interrupt Handlers */
 
@@ -117,7 +115,6 @@ typedef struct {
 #define INT_ZEROCROSS INT0_vect
 #define INT_TRIAC_TIMER TIMER1_OVF_vect
 #define INT_SENSOR_TIMER TIMER0_COMPA_vect
-#define INT_PULSE_COUNTER TIMER2_COMPA_vect
 
 /* Registers and Bitmasks */
 
@@ -142,9 +139,9 @@ typedef struct {
 #define RECEIVE_INT_FLAG (1 << INTF1)
 #define RECEIVE_INT_EN (1 << INT1) 
 
-#define RECEIVE_INT_CLEARFLAG() RECEIVE_EIFR |= RECEIVE_INT_FLAG
-#define RECEIVE_INT_ENABLE() RECEIVE_EIMSK |= RECEIVE_INT_EN
-#define RECEIVE_INT_DISABLE() RECEIVE_EIMSK &= ~RECEIVE_INT_EN
+#define RECEIVE_INT_CLEARFLAG() do { RECEIVE_EIFR |= RECEIVE_INT_FLAG; } while(0)
+#define RECEIVE_INT_ENABLE() do { RECEIVE_EIMSK |= RECEIVE_INT_EN; } while(0)
+#define RECEIVE_INT_DISABLE() do { RECEIVE_EIMSK &= ~RECEIVE_INT_EN; } while(0)
 
 /* Registers for Zerocross External Interrupt */
 #define ZEROCROSS_EIMSK EIMSK
@@ -155,11 +152,11 @@ typedef struct {
 #define ZEROCROSS_INT_FLAG (1 << INTF0)
 #define ZEROCROSS_INT_EN (1 << INT0) 
 
-#define ZEROCROSS_INT_CLEARFLAG() ZEROCROSS_EIFR |= ZEROCROSS_INT_FLAG
-#define ZEROCROSS_INT_ENABLE() ZEROCROSS_EIMSK |= ZEROCROSS_INT_EN
-#define ZEROCROSS_INT_DISABLE() ZEROCROSS_EIMSK &= ~ZEROCROSS_INT_EN
+#define ZEROCROSS_INT_CLEARFLAG() do { ZEROCROSS_EIFR |= ZEROCROSS_INT_FLAG; } while(0)
+#define ZEROCROSS_INT_ENABLE() do { ZEROCROSS_EIMSK |= ZEROCROSS_INT_EN; } while(0)
+#define ZEROCROSS_INT_DISABLE() do { ZEROCROSS_EIMSK &= ~ZEROCROSS_INT_EN; } while(0)
 
-/* Registers for Sensor pulse timer */
+/* Registers for Sensor timer */
 #define SENSOR_TIMSK TIMSK0
 #define SENSOR_TIFR TIFR0
 #define SENSOR_TCNT TCNT0
@@ -167,30 +164,14 @@ typedef struct {
 #define SENSOR_CFG_A TCCR0A
 #define SENSOR_CFG_B TCCR0B
 
-/* Masks for Sensor Pulse Timer */
+/* Masks for Sensor Timer */
 #define SENSOR_INT_FLAG (1 << OCF0A)
 #define SENSOR_INT_EN (1 << OCIE0A)
 
-#define SENSOR_TIMER_INT_CLEARFLAG() SENSOR_TIFR |= SENSOR_INT_FLAG
-#define SENSOR_TIMER_INT_ENABLE() SENSOR_TIMSK |= SENSOR_INT_EN
-#define SENSOR_TIMER_INT_DISABLE() SENSOR_TIMSK &= ~SENSOR_INT_EN
-
-/* Registers for Pulse Counter */
-#define PULSE_COUNTER_TIMSK TIMSK2
-#define PULSE_COUNTER_TIFR TIFR2
-#define PULSE_COUNTER_TCNT TCNT2
-#define PULSE_COUNTER_COMP OCR2A
-#define PULSE_COUNTER_CFG_A TCCR2A
-#define PULSE_COUNTER_CFG_B TCCR2B
-
-/* Masks for Sensor Pulse Timer */
-#define PULSE_COUNTER_INT_FLAG (1 << OCF2A)
-#define PULSE_COUNTER_INT_EN (1 << OCIE2A)
-
-#define PULSE_COUNTER_INT_CLEARFLAG() PULSE_COUNTER_TIFR |= PULSE_COUNTER_INT_FLAG
-#define PULSE_COUNTER_INT_ENABLE() PULSE_COUNTER_TIMSK |= PULSE_COUNTER_INT_EN
-#define PULSE_COUNTER_INT_DISABLE() PULSE_COUNTER_TIMSK &= ~PULSE_COUNTER_INT_EN
-
+#define SENSOR_TIMER_INT_CLEARFLAG() do { SENSOR_TIFR |= SENSOR_INT_FLAG; } while(0)
+#define SENSOR_TIMER_INT_ENABLE() do { SENSOR_TIMSK |= SENSOR_INT_EN; } while(0)
+#define SENSOR_TIMER_INT_DISABLE() do { SENSOR_TIMSK &= ~SENSOR_INT_EN; } while(0)
+#define SENSOR_TIMER_RESET() do { SENSOR_TCNT = 0; } while(0)
 
 /* Board-Specific Constants */
 #define TRIAC_TCNT_MAX UINT16_MAX

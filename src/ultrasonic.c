@@ -53,14 +53,13 @@ typedef enum {
 	RECOVERING
 } state_t;
 
-state_t state = IDLE;
+static state_t state = IDLE;
 static volatile uint16_t periods;
 static volatile uint32_t echo_tics = 0;
 static volatile uint16_t echo_periods = 0;
-static selected_sensor = 0;
+static uint8_t selected_sensor = 0;
 
 #define TIMEOUT_TICS TIMEOUT_US * F_CPU / 1000000
-
 
 #define TICS_PER_PERIOD SENSOR_TCNT_MAX >> SENSOR_TIME_DIV
 
@@ -92,9 +91,9 @@ void start_reading(void) {
 		return;
 	SET_TEST_PIN();
 	state = PULSING;
-	SENSOR_COMP = SENSOR_TCNT_MAX;
-	SENSOR_TCNT = 0;
 	periods = 0;
+	TRIGGER_SENSOR(selected_sensor);
+	SENSOR_TIMER_RESET();
 	/* clear any existing sensor timer flags */
 	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
@@ -108,61 +107,29 @@ void start_reading(void) {
  */
 ISR(INT_SENSOR_TIMER) {
 	periods++;
-	switch(state) {
-
-		case PULSING:
-		case LISTENING:
-		case RECEIVING:
-		default:
-		break;
-	}
 }
-
-/* if we hit this interrupt, then we didn't get another pulse in time */
-ISR(INT_PULSE_COUNTER) {
-	state = LISTENING;
-	PULSE_COUNTER_INT_DISABLE();
-}
-
 
 /* this interrupt is called when transducer output changes state */
 ISR(INT_RECEIVE) {
-	static unsigned char received_edges;
-
-	unsigned char pulse_tics = PULSE_COUNTER_TCNT;
-	PULSE_COUNTER_TCNT = 0;
-
 	switch(state) {
 		case PULSING:
-			if(!TEST_RECEIVE_PIN())
-				CLR_SENSOR_PIN(sensor);
-			/* first pulse of a group */
-			break;
-
-		case RECEIVING:
-			/* we've recently received another pulse, check how long ago */
-			if(pulse_tics < PULSE_TICS_MIN) {
-				/* pulse was too short, reset and wait for another */
+			if(!TEST_RECEIVE_PIN) {
+				RELEASE_SENSOR(selected_sensor);
 				state = LISTENING;
-				PULSE_COUNTER_INT_DISABLE();
 			}
-			else {
-				/* pulse was the right length */
-				received_edges++;
-			}
-			if(received_edges >= 3) {
-				/* we've received 3 proper-length pulses in a row, it's an echo */
+			break;
+		case LISTENING:
+			if(TEST_RECEIVE_PIN) {
 				echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
 					<< SENSOR_TIME_DIV;
 				echo_periods = periods;
 				RECEIVE_INT_DISABLE();
-				PULSE_COUNTER_INT_DISABLE();
 				SENSOR_TIMER_INT_DISABLE();
 				state = IDLE;
 				CLR_TEST_PIN();
 			}
-			break;
 		default:
+			/*TODO: add assertions for unexpected states */
 			break;
 	}
 }
