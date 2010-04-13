@@ -86,11 +86,9 @@ typedef struct {
 #define SENSOR_TRIGGER_PORT PORTD
 #define SENSOR_TRIGGER_DD DDRD
 #define SENSOR_TRIGGER_MASK (0x0F << 4)
-#define CLR_TRIGGER_PINS() do { SENSOR_TRIGGER_PORT &= ~SENSOR_TRIGGER_MASK; } while(0)
-#define SET_TRIGGER_PINS() do { SENSOR_TRIGGER_PORT |= SENSOR_TRIGGER_MASK; } while(0)
 #define TRIGGER_SENSOR(n) do { SENSOR_TRIGGER_PORT |= (1 << (n+4)); } while(0)
 
-#define RELEASE_SENSOR(n) do { SENSOR_TRIGGER_PORT &= !(1 << (n+4)); } while(0)
+#define RELEASE_SENSOR(n) do { SENSOR_TRIGGER_PORT &= ~(1 << (n+4)); } while(0)
 
 #define RECEIVE_PORT PORTD
 #define RECEIVE_DD DDRD

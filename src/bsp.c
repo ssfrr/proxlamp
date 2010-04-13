@@ -61,8 +61,6 @@ void sensor_timer_setup() {
 	SENSOR_COMP = SENSOR_TCNT_MAX;
 	/* disable timer interrupts for this counter */
 	SENSOR_TIMSK &= ~SENSOR_INT_EN;
-	/* set compare value to zero (effectively trigger on overflow) */
-	SENSOR_COMP = 0;
 }
 
 void pin_io_setup(void) {

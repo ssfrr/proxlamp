@@ -193,7 +193,6 @@ typedef struct {
 /* Board-Specific Constants */
 #define TRIAC_TCNT_MAX UINT16_MAX
 #define SENSOR_TCNT_MAX UINT8_MAX
-#define PULSE_COUNTER_TCNT_MAX UINT8_MAX
 #define TRIAC_TIME_DIV 3
 #define SENSOR_TIME_DIV 0
 

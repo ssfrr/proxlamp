@@ -49,6 +49,7 @@ typedef enum {
 	IDLE,
 	PULSING,
 	LISTENING,
+	IGNORING,
 	RECEIVING,
 	RECOVERING
 } state_t;
@@ -59,9 +60,11 @@ static volatile uint32_t echo_tics = 0;
 static volatile uint16_t echo_periods = 0;
 static uint8_t selected_sensor = 0;
 
-#define TIMEOUT_TICS TIMEOUT_US * F_CPU / 1000000
+#define TIMEOUT_TICS TIMEOUT_US * (F_CPU / 1000000UL)
 
 #define TICS_PER_PERIOD SENSOR_TCNT_MAX >> SENSOR_TIME_DIV
+
+#define TIMEOUT_PERIODS TIMEOUT_TICS / TICS_PER_PERIOD
 
 #define UM_PER_PERIOD 5332
 
@@ -98,7 +101,6 @@ void start_reading(void) {
 	SENSOR_TIMER_INT_CLEARFLAG();
 	/* enable sensor timer interrupt */
 	SENSOR_TIMER_INT_ENABLE();
-	RECEIVE_INT_ENABLE();
 }
 
 /* 
@@ -107,29 +109,31 @@ void start_reading(void) {
  */
 ISR(INT_SENSOR_TIMER) {
 	periods++;
+	if(state == PULSING && periods > 51) {
+		RELEASE_SENSOR(selected_sensor);
+		state = IGNORING;
+	}
+	else if(state == IGNORING && periods > 85) {
+		RECEIVE_INT_CLEARFLAG();
+		RECEIVE_INT_ENABLE();
+		state = LISTENING;
+	}
+	else if(periods > 500) {
+		RECEIVE_INT_DISABLE();
+		SENSOR_TIMER_INT_DISABLE();
+		CLR_TEST_PIN();
+		echo_tics = 0;
+		state = IDLE;
+	}
 }
 
 /* this interrupt is called when transducer output changes state */
 ISR(INT_RECEIVE) {
-	switch(state) {
-		case PULSING:
-			if(!TEST_RECEIVE_PIN) {
-				RELEASE_SENSOR(selected_sensor);
-				state = LISTENING;
-			}
-			break;
-		case LISTENING:
-			if(TEST_RECEIVE_PIN) {
-				echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
-					<< SENSOR_TIME_DIV;
-				echo_periods = periods;
-				RECEIVE_INT_DISABLE();
-				SENSOR_TIMER_INT_DISABLE();
-				state = IDLE;
-				CLR_TEST_PIN();
-			}
-		default:
-			/*TODO: add assertions for unexpected states */
-			break;
-	}
+	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
+		<< SENSOR_TIME_DIV;
+	echo_periods = periods;
+	RECEIVE_INT_DISABLE();
+	SENSOR_TIMER_INT_DISABLE();
+	state = IDLE;
+	CLR_TEST_PIN();
 }

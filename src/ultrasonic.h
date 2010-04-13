@@ -36,7 +36,7 @@
 #define RINGDOWN_US 1500
 
 /* stop listening to echos after this many microseconds */
-#define TIMEOUT_US 20000
+#define TIMEOUT_US 10000UL
 
 
 uint8_t sensor_busy(void);
