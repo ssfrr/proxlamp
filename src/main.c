@@ -33,18 +33,38 @@
 #include "dimmer.h"
 #include "ultrasonic.h"
 
+/* pulse ranges from 3ms to 7ms 
+ * or 1.02m to 2.38m (round trip)
+ * or 0.51m to 1.19m (one way)
+ *
+ * difference: 680mm 
+ * UINT_MAX / 680 = 96.37 */
+
+
 int main(void) {
+	uint16_t target_brightness = 0;
+	uint16_t current_brightness = 0;
 	/* set up board-specific stuff */
 	bsp_setup();
 	
 	//select_sensor(0);
 
+	start_reading();
 	while(1) {
-		start_reading();
-		while(sensor_busy()) {};
-		uint16_t distance = get_distance();
-		set_brightness(distance * 65);
-		_delay_ms(500);
+		if(!sensor_busy()) {
+			uint16_t distance = get_distance();
+			if(distance < 510)
+				target_brightness = UINT16_MAX;
+			else if(distance > 1190)
+				target_brightness = 0;
+			else
+				target_brightness = UINT16_MAX  - (distance-510) * 96;
+			start_reading();
+		}
+		if(target_brightness != current_brightness)
+			current_brightness += (target_brightness > current_brightness ? 1 : -1);
+		set_brightness(current_brightness);
+		_delay_us(200);
 	}
 	return 0;
 }

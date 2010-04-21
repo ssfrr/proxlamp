@@ -66,7 +66,7 @@ static uint8_t selected_sensor = 0;
 
 #define TIMEOUT_PERIODS TIMEOUT_TICS / TICS_PER_PERIOD
 
-#define UM_PER_PERIOD 5332
+#define UM_PER_PERIOD 5440
 
 /* return the distance in mm */
 uint16_t get_distance(void) {
@@ -109,7 +109,7 @@ void start_reading(void) {
  */
 ISR(INT_SENSOR_TIMER) {
 	periods++;
-	if(state == PULSING && periods > 51) {
+	if(state == PULSING && periods > 21) {
 		RELEASE_SENSOR(selected_sensor);
 		state = IGNORING;
 	}
@@ -127,13 +127,12 @@ ISR(INT_SENSOR_TIMER) {
 	}
 }
 
-/* this interrupt is called when transducer output changes state */
+/* this interrupt is called when transducer output goes from low to high */
 ISR(INT_RECEIVE) {
 	echo_tics = (periods * SENSOR_TCNT_MAX + SENSOR_TCNT) 
 		<< SENSOR_TIME_DIV;
 	echo_periods = periods;
 	RECEIVE_INT_DISABLE();
-	SENSOR_TIMER_INT_DISABLE();
-	state = IDLE;
+	state = RECOVERING;
 	CLR_TEST_PIN();
 }

@@ -95,13 +95,13 @@ void pin_io_setup(void) {
 	SENSOR_SEL_DD |= SENSOR_SEL_MASK;
 	
 	/* set Zerocross interrupt to trigger on both edges */
-	ZEROCROSS_EICRA |= (1 << ISC00);
+	ZEROCROSS_EICRA = (ZEROCROSS_EICRA & 0xFC) | ((0 << ISC01) | (1 << ISC00));
 
 	/* enable interrupt from INT0 */
 	ZEROCROSS_INT_ENABLE();
 
-	/* set receive interrupt to trigger on both edget */
-	RECEIVE_EICRA |= (1 << ISC10);
+	/* set receive interrupt to trigger on the rising edge */
+	RECEIVE_EICRA = (ZEROCROSS_EICRA & 0xF3) | ((1 << ISC11) | (1 << ISC10));
 
 	/* disable receive interrupt until we're ready to listen */
 	RECEIVE_INT_DISABLE();
