@@ -109,16 +109,16 @@ void start_reading(void) {
  */
 ISR(INT_SENSOR_TIMER) {
 	periods++;
-	if(state == PULSING && periods > 21) {
+	if(state == PULSING && periods > 10) {
 		RELEASE_SENSOR(selected_sensor);
 		state = IGNORING;
 	}
-	else if(state == IGNORING && periods > 85) {
+	else if(state == IGNORING && periods > 103) {
 		RECEIVE_INT_CLEARFLAG();
 		RECEIVE_INT_ENABLE();
 		state = LISTENING;
 	}
-	else if(periods > 500) {
+	else if(periods > 4000) {
 		RECEIVE_INT_DISABLE();
 		SENSOR_TIMER_INT_DISABLE();
 		CLR_TEST_PIN();

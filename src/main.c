@@ -40,19 +40,23 @@
  * difference: 680mm 
  * UINT_MAX / 680 = 96.37 */
 
-#define MAX_DIST 1300
-#define MIN_DIST 510
-#define DIST_COEF (UINT16_MAX / (MAX_DIST - MIN_DIST))
+#define min(x,y) ((x) < (y) ? (x) : (y))
+#define diff(x,y) min((x)-(y),(y)-(x))
 
-#define DISTANCE_READINGS 30
+#define DISTANCE_READINGS 5
 
 int main(void) {
 	uint16_t target_brightness = 0;
 	uint16_t current_brightness = 0;
 	uint16_t distances[DISTANCE_READINGS];
 	uint8_t distance_index = 0;
-	uint16_t distance_avg = 0;
-	uint32_t sum;
+	uint16_t distance_avg;
+	uint16_t distance_current; 
+	uint16_t distance_prev = 0;
+
+	uint8_t exact_count = 0;
+	uint16_t distance_min = 510;
+	uint16_t distance_max = 1500;
 	/* set up board-specific stuff */
 	bsp_setup();
 	
@@ -61,20 +65,32 @@ int main(void) {
 	start_reading();
 	while(1) {
 		if(!sensor_busy()) {
-			uint8_t i;
-			distances[distance_index] = get_distance();
-			distance_index = (distance_index + 1) % DISTANCE_READINGS;
+			distance_current = get_distance();
+			if(diff(distance_prev,distance_current) < 100) {
+				uint8_t i;
+				uint32_t sum = 0;
+				if(distance_prev == distance_current) {
+					exact_count++;
+					if(exact_count > 5)
+						distance_max = distance_current;
+				}
+				else
+					exact_count = 0;
+				
+				distances[distance_index] = distance_current;
+				distance_index = (distance_index + 1) % DISTANCE_READINGS;
+				for(i = 0; i != DISTANCE_READINGS; i++)
+					sum += distances[i];
+				distance_avg = sum / DISTANCE_READINGS;
+				if(distance_avg < distance_min)
+					target_brightness = UINT16_MAX;
+				else if(distance_avg > distance_max)
+					target_brightness = 0;
+				else
+					target_brightness = UINT16_MAX  - (distance_avg-distance_min) * (UINT16_MAX / (distance_max-distance_min));
+			}
+			distance_prev = distance_current;
 
-			sum = 0;
-			for(i = DISTANCE_READINGS-1; i != 0; i--)
-				sum += distances[i];
-			distance_avg = sum / DISTANCE_READINGS;
-			if(distance_avg < MIN_DIST)
-				target_brightness = UINT16_MAX;
-			else if(distance_avg > MAX_DIST)
-				target_brightness = 0;
-			else
-				target_brightness = UINT16_MAX  - (distance_avg-MIN_DIST) * DIST_COEF;
 			start_reading();
 		}
 		if(target_brightness != current_brightness)
