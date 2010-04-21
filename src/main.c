@@ -40,10 +40,19 @@
  * difference: 680mm 
  * UINT_MAX / 680 = 96.37 */
 
+#define MAX_DIST 1300
+#define MIN_DIST 510
+#define DIST_COEF (UINT16_MAX / (MAX_DIST - MIN_DIST))
+
+#define DISTANCE_READINGS 30
 
 int main(void) {
 	uint16_t target_brightness = 0;
 	uint16_t current_brightness = 0;
+	uint16_t distances[DISTANCE_READINGS];
+	uint8_t distance_index = 0;
+	uint16_t distance_avg = 0;
+	uint32_t sum;
 	/* set up board-specific stuff */
 	bsp_setup();
 	
@@ -52,13 +61,20 @@ int main(void) {
 	start_reading();
 	while(1) {
 		if(!sensor_busy()) {
-			uint16_t distance = get_distance();
-			if(distance < 510)
+			uint8_t i;
+			distances[distance_index] = get_distance();
+			distance_index = (distance_index + 1) % DISTANCE_READINGS;
+
+			sum = 0;
+			for(i = DISTANCE_READINGS-1; i != 0; i--)
+				sum += distances[i];
+			distance_avg = sum / DISTANCE_READINGS;
+			if(distance_avg < MIN_DIST)
 				target_brightness = UINT16_MAX;
-			else if(distance > 1190)
+			else if(distance_avg > MAX_DIST)
 				target_brightness = 0;
 			else
-				target_brightness = UINT16_MAX  - (distance-510) * 96;
+				target_brightness = UINT16_MAX  - (distance_avg-MIN_DIST) * DIST_COEF;
 			start_reading();
 		}
 		if(target_brightness != current_brightness)

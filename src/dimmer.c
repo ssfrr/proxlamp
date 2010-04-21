@@ -43,7 +43,7 @@ volatile uint32_t wait_time;
  * it's rounded down a bit to make sure it doesn't wait all the way
  * until the next cycle*/
 /* TODO: set halfcycle dynamically */
-uint32_t ac_halfcycle = 64500;
+uint32_t ac_halfcycle = 64000;
 
 /* Function Definitions */
 void set_brightness(uint16_t brightness) {
