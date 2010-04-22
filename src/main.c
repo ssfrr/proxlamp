@@ -94,6 +94,7 @@ int main(void) {
 			start_reading();
 		}
 		if(target_brightness != current_brightness)
+			//current_brightness += (int16_t)(target_brightness - current_brightness)/100;
 			current_brightness += (target_brightness > current_brightness ? 1 : -1);
 		set_brightness(current_brightness);
 		_delay_us(200);

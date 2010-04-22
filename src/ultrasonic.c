@@ -113,7 +113,7 @@ ISR(INT_SENSOR_TIMER) {
 		RELEASE_SENSOR(selected_sensor);
 		state = IGNORING;
 	}
-	else if(state == IGNORING && periods > 103) {
+	else if(state == IGNORING && periods > 120) {
 		RECEIVE_INT_CLEARFLAG();
 		RECEIVE_INT_ENABLE();
 		state = LISTENING;
