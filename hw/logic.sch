@@ -16,7 +16,7 @@ C 44700 40300 1 90 0 avr_isp-1.sym
 T 42900 42100 5 10 0 0 90 0 1
 device=CONNECTOR_6
 T 42700 40400 5 10 1 1 90 0 1
-refdes=CONN2
+refdes=ICSP
 T 43150 42050 5 10 0 0 90 0 1
 footprint=header3x2
 T 44700 40300 5 10 0 1 0 0 1
@@ -25,7 +25,7 @@ value=10-89-7061
 C 44600 50000 1 90 0 connector6-2.sym
 {
 T 41700 50700 5 10 1 1 90 6 1
-refdes=CONN1
+refdes=TO_HV
 T 41750 50300 5 10 0 0 90 0 1
 device=CONNECTOR_4
 T 41550 50300 5 10 0 0 90 0 1
@@ -292,7 +292,7 @@ N 42500 45300 42500 45600 4
 C 53000 48200 1 0 0 connector4-2.sym
 {
 T 53700 50300 5 10 1 1 0 6 1
-refdes=CONN3
+refdes=SEN0
 T 53300 50250 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 53300 50450 5 10 0 0 0 0 1
@@ -303,7 +303,7 @@ value=10-89-7061
 C 55500 48200 1 0 0 connector4-2.sym
 {
 T 56200 50300 5 10 1 1 0 6 1
-refdes=CONN4
+refdes=SEN1
 T 55800 50250 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 55800 50450 5 10 0 0 0 0 1
@@ -312,7 +312,7 @@ footprint=header4x1
 C 53000 45900 1 0 0 connector4-2.sym
 {
 T 53700 48000 5 10 1 1 0 6 1
-refdes=CONN5
+refdes=SEN2
 T 53300 47950 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 53300 48150 5 10 0 0 0 0 1
@@ -321,7 +321,7 @@ footprint=header4x1
 C 55500 45900 1 0 0 connector4-2.sym
 {
 T 56200 48000 5 10 1 1 0 6 1
-refdes=CONN6
+refdes=SEN3
 T 55800 47950 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 55800 48150 5 10 0 0 0 0 1
@@ -330,7 +330,7 @@ footprint=header4x1
 C 53000 43600 1 0 0 connector4-2.sym
 {
 T 53700 45700 5 10 1 1 0 6 1
-refdes=CONN7
+refdes=SEN4
 T 53300 45650 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 53300 45850 5 10 0 0 0 0 1
@@ -339,7 +339,7 @@ footprint=header4x1
 C 55500 43600 1 0 0 connector4-2.sym
 {
 T 56200 45700 5 10 1 1 0 6 1
-refdes=CONN8
+refdes=SEN5
 T 55800 45650 5 10 0 0 0 0 1
 device=CONNECTOR_4
 T 55800 45850 5 10 0 0 0 0 1

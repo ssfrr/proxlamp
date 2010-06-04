@@ -1,5 +1,5 @@
 # release: pcb 20091103
-# date:    Tue May  4 12:12:11 2010
+# date:    Tue May  4 13:21:42 2010
 # user:    srussell (Spencer Russell,,,)
 # host:    optimus
 
@@ -8,12 +8,12 @@ FileVersion[20070407]
 
 PCB["logic" 175000 175000]
 
-Grid[1000.000000 0 0 1]
+Grid[1000.000000 0 0 0]
 Cursor[0 0 0.000000]
 PolyArea[200000000.000000]
 Thermal[0.500000]
 DRC[1200 1000 1000 1000 1500 1200]
-Flags("showdrc,rubberband,nameonpcb,autodrc,clearnew,snappin,liveroute,hidenames")
+Flags("showdrc,nameonpcb,autodrc,clearnew,snappin,liveroute,onlynames")
 Groups("1,c:2:3:4,s:5")
 Styles["Thin,800,3400,1000,1000:Signal,1400,4900,2500,1200:Thick,4000,5900,3500,1200:Mega,10000,10000,3500,2000"]
 
@@ -804,7 +804,7 @@ Via[155000 20000 20500 2400 22000 12500 "" "thermal(1X)"]
 Via[10000 127000 4900 2400 6000 2500 "" ""]
 Via[149000 96000 4900 2400 6000 2500 "" ""]
 
-Element["" "DIP28N" "U1" "ATMEGA88P" 152500 52500 -5000 17000 2 100 ""]
+Element["" "DIP28N" "U1" "ATMEGA88P" 152500 52500 -10000 10000 0 100 ""]
 (
 	Pin[0 0 6000 3000 6600 2800 "(RESET" "1" "square,edge2"]
 	Pin[-10000 0 6000 3000 6600 2800 "PD0 (RxD" "2" "edge2"]
@@ -870,20 +870,6 @@ Element["" "DIP16" "U5" "CD4512BE" 95000 135000 5000 -17000 0 100 ""]
 
 	)
 
-Element["" "header4x1" "CONN5" "unknown" 70000 137500 12500 -12500 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
-
-	)
-
 Element["" "cpol-2mm" "C4" "DNP" 77500 110374 -7657 -532 1 100 ""]
 (
 	Pin[0 0 5000 2400 6000 2598 "+" "1" "thermal(2X)"]
@@ -906,21 +892,7 @@ Element["" "c-100mil" "C1" "100n" 82500 40000 -12500 -2500 0 100 ""]
 
 	)
 
-Element["" "header4x1" "CONN4" "unknown" 75000 150000 12500 -10000 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
-
-	)
-
-Element["" "cpol-2mm" "C2" "DNP" 92500 25000 1968 -9843 2 100 ""]
+Element["" "cpol-2mm" "C2" "DNP" 92500 25000 -2968 -16157 0 100 "selected"]
 (
 	Pin[0 0 5000 2400 6000 2598 "+" "1" "edge2,thermal(2X)"]
 	Pin[-7874 0 5000 2400 6000 2598 "-" "2" "edge2,thermal(0X,1X)"]
@@ -928,79 +900,6 @@ Element["" "cpol-2mm" "C2" "DNP" 92500 25000 1968 -9843 2 100 ""]
 	ElementLine [-1968 -4921 1969 -4921 1000]
 	ElementLine [0 -6889 0 -2952 1000]
 	ElementArc [-3937 0 9843 9843 180 360 1000]
-
-	)
-
-Element["hidename" "header3x2" "CONN2" "10-89-7061" 111500 32500 -5000 -21000 0 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "MISO" "1" "square,edge2"]
-	Pin[0 -10000 6200 2400 6800 3800 "Vcc" "2" "edge2,thermal(2X)"]
-	Pin[10000 0 6200 2400 6800 3800 "SCK" "3" "edge2"]
-	Pin[10000 -10000 6200 2400 6800 3800 "MOSI" "4" "edge2"]
-	Pin[20000 0 6200 2400 6800 3800 "RESET" "5" "edge2"]
-	Pin[20000 -10000 6200 2400 6800 3800 "GND" "6" "edge2,thermal(0X,1X)"]
-	ElementLine [-5000 -5000 5000 -5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-5000 -15000 -5000 5000 1000]
-	ElementLine [-5000 -15000 25000 -15000 1000]
-	ElementLine [25000 -15000 25000 5000 1000]
-	ElementLine [-5000 5000 25000 5000 1000]
-
-	)
-
-Element["" "header4x1" "CONN8" "unknown" 55000 100000 12500 -10000 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
-
-	)
-
-Element["" "header4x1" "CONN6" "unknown" 65000 125000 12500 -10000 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
-
-	)
-
-Element["" "header4x1" "CONN7" "unknown" 60000 112500 12500 -12500 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
-
-	)
-
-Element["" "header4x1" "CONN3" "10-89-7061" 80000 162500 12500 -7500 3 100 ""]
-(
-	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
-	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
-	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
-	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
-	ElementLine [-5000 -5000 -5000 5000 1000]
-	ElementLine [5000 -5000 5000 5000 1000]
-	ElementLine [-35000 5000 5000 5000 1000]
-	ElementLine [-35000 -5000 5000 -5000 1000]
-	ElementLine [-35000 -5000 -35000 5000 1000]
 
 	)
 
@@ -1015,7 +914,24 @@ Element["" "c-100mil" "C3" "100n" 105000 95000 7500 -2500 0 100 ""]
 
 	)
 
-Element["" "header3x2" "CONN1" "10-89-7061" 42500 32500 -5000 -21000 0 100 ""]
+Element["" "header3x2" "ICSP" "10-89-7061" 111501 32500 -5000 -21000 0 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "1" "1" "square,edge2"]
+	Pin[0 -10000 6200 2400 6800 3800 "2" "2" "edge2,thermal(2X)"]
+	Pin[10000 0 6200 2400 6800 3800 "3" "3" "edge2"]
+	Pin[10000 -10000 6200 2400 6800 3800 "4" "4" "edge2"]
+	Pin[20000 0 6200 2400 6800 3800 "5" "5" "edge2"]
+	Pin[20000 -10000 6200 2400 6800 3800 "6" "6" "edge2,thermal(1X)"]
+	ElementLine [-5000 -5000 5000 -5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-5000 -15000 -5000 5000 1000]
+	ElementLine [-5000 -15000 25000 -15000 1000]
+	ElementLine [25000 -15000 25000 5000 1000]
+	ElementLine [-5000 5000 25000 5000 1000]
+
+	)
+
+Element["" "header3x2" "TO_HV" "10-89-7061" 42000 33000 -5000 -21000 0 100 ""]
 (
 	Pin[0 0 6200 2400 6800 3800 "1" "1" "square,edge2,thermal(1X)"]
 	Pin[0 -10000 6200 2400 6800 3800 "2" "2" "edge2,thermal(2X)"]
@@ -1031,10 +947,93 @@ Element["" "header3x2" "CONN1" "10-89-7061" 42500 32500 -5000 -21000 0 100 ""]
 	ElementLine [-5000 5000 25000 5000 1000]
 
 	)
-Rat[104000 46000 3 107400 57400 3  "selected"]
+
+Element["" "header4x1" "SEN2" "unknown" 70000 137000 -35367 -5089 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
+
+Element["" "header4x1" "SEN1" "unknown" 75000 150000 -35367 -5089 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
+
+Element["" "header4x1" "SEN0" "10-89-7061" 81000 163000 -35059 -6517 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
+
+Element["" "header4x1" "SEN3" "unknown" 64000 125000 -35102 -6078 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
+
+Element["" "header4x1" "SEN4" "unknown" 59596 112280 -36000 -6000 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
+
+Element["" "header4x1" "SEN5" "unknown" 55000 99500 -36000 -7000 3 100 ""]
+(
+	Pin[0 0 6200 2400 6800 3800 "" "1" "edge2,thermal(1X)"]
+	Pin[-10000 0 6200 2400 6800 3800 "" "2" "edge2"]
+	Pin[-20000 0 6200 2400 6800 3800 "" "3" "edge2,thermal(2X)"]
+	Pin[-30000 0 6200 2400 6800 3800 "" "4" "edge2"]
+	ElementLine [-5000 -5000 -5000 5000 1000]
+	ElementLine [5000 -5000 5000 5000 1000]
+	ElementLine [-35000 5000 5000 5000 1000]
+	ElementLine [-35000 -5000 5000 -5000 1000]
+	ElementLine [-35000 -5000 -35000 5000 1000]
+
+	)
 Layer(1 "Component")
 (
-	Line[111500 32500 111501 32500 1400 2400 "clearline,auto"]
+	Line[135600 35600 131500 35600 1400 2400 "clearline,auto"]
 	Line[52500 82500 52500 82501 1400 2400 "clearline,auto"]
 	Line[41000 41000 52500 52500 1400 2400 "clearline"]
 	Line[159000 80599 159000 87000 1400 2400 "clearline"]
@@ -1054,7 +1053,7 @@ Layer(1 "Component")
 	Line[82500 52500 82500 40000 4000 2400 "clearline"]
 	Line[82500 40000 84626 37874 4000 2400 "clearline"]
 	Line[84626 37874 84626 25000 4000 2400 "clearline"]
-	Line[111501 32500 111500 32500 1400 2400 "clearline,auto"]
+	Line[152500 52501 152500 52500 1400 2400 "clearline,auto"]
 	Line[119901 114901 73000 114901 1400 2400 "clearline"]
 	Line[73000 114901 63099 105000 1400 2400 "clearline"]
 	Line[63099 105000 55101 105000 1400 2400 "clearline"]
@@ -1145,14 +1144,12 @@ Layer(1 "Component")
 	Line[121500 17499 84274 17499 1400 2400 "clearline,auto"]
 	Line[121500 22500 121500 22501 1400 2400 "clearline,auto"]
 	Line[52500 82500 52500 82501 1400 2400 "clearline,auto"]
-	Line[152500 52501 152500 52500 1400 2400 "clearline,auto"]
-	Line[135600 35600 131500 35600 1400 2400 "clearline,auto"]
 )
 Layer(2 "GND")
 (
 	Polygon("clearpoly")
 	(
-		[0 0] [175000 0] [175000 175000] [0 175000] 
+		[-3 -4] [174997 -4] [174997 174996] [-3 174996] 
 	)
 )
 Layer(3 "Power")
@@ -1229,7 +1226,13 @@ Layer(6 "silk")
 )
 Layer(7 "silk")
 (
-	Text[115000 10000 0 100 "ICSP" ""]
+	Text[89000 155000 0 100 "ProxLamp Rev 002" ""]
+	Text[89000 161000 0 100 "From Nini Hu" ""]
+	Text[89000 167000 0 100 "Design: Spencer Russell" ""]
+	Text[20000 88000 0 100 "In" ""]
+	Text[41000 88000 0 100 "Out" ""]
+	Text[29000 88000 0 100 "12V" ""]
+	Text[52000 88000 0 100 "GND" ""]
 	Polygon("clearpoly")
 	(
 		[111500 37500] [116500 42500] [106500 42500] 
@@ -1243,13 +1246,13 @@ NetList()
 (
 	Net("+12V" "(unknown)")
 	(
-		Connect("CONN1-2")
-		Connect("CONN3-3")
-		Connect("CONN4-3")
-		Connect("CONN5-3")
-		Connect("CONN6-3")
-		Connect("CONN7-3")
-		Connect("CONN8-3")
+		Connect("SEN0-3")
+		Connect("SEN1-3")
+		Connect("SEN2-3")
+		Connect("SEN3-3")
+		Connect("SEN4-3")
+		Connect("SEN5-3")
+		Connect("TO_HV-2")
 	)
 	Net("GND" "(unknown)")
 	(
@@ -1257,15 +1260,15 @@ NetList()
 		Connect("C2-2")
 		Connect("C3-1")
 		Connect("C4-2")
-		Connect("CONN1-1")
-		Connect("CONN1-3")
-		Connect("CONN2-6")
-		Connect("CONN3-1")
-		Connect("CONN4-1")
-		Connect("CONN5-1")
-		Connect("CONN6-1")
-		Connect("CONN7-1")
-		Connect("CONN8-1")
+		Connect("ICSP-6")
+		Connect("SEN0-1")
+		Connect("SEN1-1")
+		Connect("SEN2-1")
+		Connect("SEN3-1")
+		Connect("SEN4-1")
+		Connect("SEN5-1")
+		Connect("TO_HV-1")
+		Connect("TO_HV-3")
 		Connect("U1-8")
 		Connect("U1-22")
 		Connect("U5-7")
@@ -1276,77 +1279,77 @@ NetList()
 	)
 	Net("S0_IN" "(unknown)")
 	(
-		Connect("CONN3-2")
+		Connect("SEN0-2")
 		Connect("U5-1")
 	)
 	Net("S0_OUT" "(unknown)")
 	(
-		Connect("CONN3-4")
+		Connect("SEN0-4")
 		Connect("U1-6")
 	)
 	Net("S1_IN" "(unknown)")
 	(
-		Connect("CONN4-2")
+		Connect("SEN1-2")
 		Connect("U5-2")
 	)
 	Net("S1_OUT" "(unknown)")
 	(
-		Connect("CONN4-4")
+		Connect("SEN1-4")
 		Connect("U1-11")
 	)
 	Net("S2_IN" "(unknown)")
 	(
-		Connect("CONN5-2")
+		Connect("SEN2-2")
 		Connect("U5-3")
 	)
 	Net("S2_OUT" "(unknown)")
 	(
-		Connect("CONN5-4")
+		Connect("SEN2-4")
 		Connect("U1-12")
 	)
 	Net("S3_IN" "(unknown)")
 	(
-		Connect("CONN6-2")
+		Connect("SEN3-2")
 		Connect("U5-4")
 	)
 	Net("S3_OUT" "(unknown)")
 	(
-		Connect("CONN6-4")
+		Connect("SEN3-4")
 		Connect("U1-13")
 	)
 	Net("S4_IN" "(unknown)")
 	(
-		Connect("CONN7-2")
+		Connect("SEN4-2")
 		Connect("U5-5")
 	)
 	Net("S4_OUT" "(unknown)")
 	(
-		Connect("CONN7-4")
+		Connect("SEN4-4")
 		Connect("U1-14")
 	)
 	Net("S5_IN" "(unknown)")
 	(
-		Connect("CONN8-2")
+		Connect("SEN5-2")
 		Connect("U5-6")
 	)
 	Net("S5_OUT" "(unknown)")
 	(
-		Connect("CONN8-4")
+		Connect("SEN5-4")
 		Connect("U1-15")
 	)
 	Net("unnamed_net1" "(unknown)")
 	(
-		Connect("CONN2-5")
+		Connect("ICSP-5")
 		Connect("U1-1")
 	)
 	Net("unnamed_net2" "(unknown)")
 	(
-		Connect("CONN1-5")
+		Connect("TO_HV-5")
 		Connect("U1-2")
 	)
 	Net("unnamed_net3" "(unknown)")
 	(
-		Connect("CONN1-4")
+		Connect("TO_HV-4")
 		Connect("U1-4")
 	)
 	Net("unnamed_net4" "(unknown)")
@@ -1356,17 +1359,17 @@ NetList()
 	)
 	Net("unnamed_net5" "(unknown)")
 	(
-		Connect("CONN2-4")
+		Connect("ICSP-4")
 		Connect("U1-17")
 	)
 	Net("unnamed_net6" "(unknown)")
 	(
-		Connect("CONN2-1")
+		Connect("ICSP-1")
 		Connect("U1-18")
 	)
 	Net("unnamed_net7" "(unknown)")
 	(
-		Connect("CONN2-3")
+		Connect("ICSP-3")
 		Connect("U1-19")
 	)
 	Net("unnamed_net8" "(unknown)")
@@ -1390,8 +1393,8 @@ NetList()
 		Connect("C2-1")
 		Connect("C3-2")
 		Connect("C4-1")
-		Connect("CONN1-6")
-		Connect("CONN2-2")
+		Connect("ICSP-2")
+		Connect("TO_HV-6")
 		Connect("U1-7")
 		Connect("U1-20")
 		Connect("U5-16")

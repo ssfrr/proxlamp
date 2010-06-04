@@ -1,5 +1,5 @@
 # release: pcb 20091103
-# date:    Tue May  4 11:37:33 2010
+# date:    Tue May  4 13:04:40 2010
 # user:    srussell (Spencer Russell,,,)
 # host:    optimus
 
@@ -13,7 +13,7 @@ Cursor[0 0 0.000000]
 PolyArea[200000000.000000]
 Thermal[0.500000]
 DRC[1200 1000 1000 1000 1500 1200]
-Flags("rubberband,nameonpcb,autodrc,clearnew,snappin,locknames")
+Flags("rubberband,nameonpcb,autodrc,clearnew,snappin,onlynames")
 Groups("1,c:2,s")
 Styles["Thin,600,2400,1180,600:Signal,1000,3600,2000,1000:Thick,5000,6000,3500,1000:Thicker,10000,6000,3500,1000"]
 
@@ -797,10 +797,10 @@ Symbol('~' 12)
 	SymbolLine(15 35 20 35 8)
 	SymbolLine(20 35 25 30 8)
 )
-Via[365000 20000 18400 4000 20800 12500 "" "thermal(0X)"]
-Via[25000 20000 18400 4000 20800 12500 "" "thermal(0X)"]
+Via[375000 25000 18400 4000 20800 12500 "" "thermal(0X)"]
+Via[25000 25000 18400 4000 20800 12500 "" "thermal(0X)"]
 Via[25000 325000 18400 4000 20800 12500 "" "thermal(0X,1X)"]
-Via[365000 325000 18400 4000 20800 12500 "" "thermal(0X)"]
+Via[375000 325000 18400 4000 20800 12500 "" "thermal(0X)"]
 
 Element["" "1W_Carbon_Resistor" "R101" "1MEG" 58810 149090 -3720 -28900 1 150 ""]
 (
@@ -1226,7 +1226,7 @@ Layer(4 "silk")
 	Text[25000 175000 0 100 "NEUT" ""]
 	Text[25000 130000 0 100 "GND" ""]
 	Text[45000 330000 0 122 "From Nini Hu" ""]
-	Text[10000 40000 0 111 "Power Supply & Dimmer" ""]
+	Text[50000 20000 0 111 "Power Supply & Dimmer" ""]
 	Text[230000 325000 0 133 "Designed by Spencer Russell" ""]
 	Text[350000 195000 0 100 "To Logic" ""]
 	Polygon("clearpoly")
