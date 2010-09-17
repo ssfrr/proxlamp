@@ -18,7 +18,7 @@ $(TARGET).hex:
 %.obj : $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $@
 
-burn: $(TARGET).hex
+flash: $(TARGET).hex
 	$(AVRPROG) -c$(PROGRAMMER) -p$(MMCU)p $(AVROPTS) -Uflash:w:$(TARGET).hex
 
 debugwire: $(TARGET).hex
